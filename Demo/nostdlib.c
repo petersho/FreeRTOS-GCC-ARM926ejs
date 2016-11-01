@@ -110,6 +110,7 @@ endf:
  *
  * @return 'destination' is returned or NULL if any parameter equals NULL
  */
+#if 0
 void* memcpy(void* destination, const void* source, size_t num )
 {
     unsigned char* srcptr = (unsigned char*) source;
@@ -169,7 +170,7 @@ void* memcpy(void* destination, const void* source, size_t num )
 
     return destination;
 }
-
+#endif
 /**
  * Copy string.
  *

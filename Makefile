@@ -35,7 +35,8 @@ CFLAG = -c
 OFLAG = -o
 INCLUDEFLAG = -I
 CPUFLAG = -mcpu=arm926ej-s
-WFLAG = -Wall -Wextra -Werror
+#WFLAG = -Wall -Wextra -Werror
+WFLAG = -Wall
 CFLAGS = $(CPUFLAG) $(WFLAG)
 
 # Additional C compiler flags to produce debugging symbols
@@ -63,6 +64,7 @@ DRIVERS_SRC = drivers/
 # Directory with demo specific source (and header) files
 APP_SRC = Demo/
 
+LIB_SRC = lib/
 
 # Object files to be linked into an application
 # Due to a large number, the .o files are arranged into logical groups:
@@ -89,9 +91,10 @@ APP_OBJS = init.o main.o print.o receive.o
 # nostdlib.o must be commented out if standard lib is going to be linked!
 APP_OBJS += nostdlib.o
 
+LIB_OBJS = memcpy.o
 
 # All object files specified above are prefixed the intermediate directory
-OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
+OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
 
 # Definition of the linker script and final targets
 LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
@@ -101,10 +104,12 @@ TARGET = image.bin
 # Include paths to be passed to $(CC) where necessary
 INC_FREERTOS = $(FREERTOS_SRC)include/
 INC_DRIVERS = $(DRIVERS_SRC)include/
+INC_LIBS_MUSL = $(LIB_SRC)musl/include/
 
 # Complete include flags to be passed to $(CC) where necessary
 INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC)
 INC_FLAG_DRIVERS = $(INCLUDEFLAG)$(INC_DRIVERS)
+INC_FLAG_MUSL = $(INCLUDEFLAG)$(INC_LIBS_MUSL)
 
 # Dependency on HW specific settings
 DEP_BSP = $(INC_DRIVERS)bsp.h
@@ -125,7 +130,7 @@ $(OBJDIR) :
 	mkdir -p $@
 
 $(ELF_IMAGE) : $(OBJS) $(LINKER_SCRIPT)
-	$(LD) -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(OFLAG) $@
+	$(LD) -nostdinc -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(OFLAG) $@
 
 debug : _debug_flags all
 
@@ -204,7 +209,7 @@ $(OBJDIR)uart.o : $(DRIVERS_SRC)uart.c $(DEP_BSP)
 # Demo application
 
 $(OBJDIR)main.o : $(APP_SRC)main.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 $(OBJDIR)init.o : $(APP_SRC)init.c $(DEP_BSP)
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
@@ -217,6 +222,11 @@ $(OBJDIR)receive.o : $(APP_SRC)receive.c $(DEP_BSP)
 
 $(OBJDIR)nostdlib.o : $(APP_SRC)nostdlib.c
 	$(CC) $(CFLAG) $(CFLAGS) $< $(OFLAG) $@
+
+
+# libs
+$(OBJDIR)memcpy.o : $(LIB_SRC)musl/src/string/memcpy.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 
 # Cleanup directives:
