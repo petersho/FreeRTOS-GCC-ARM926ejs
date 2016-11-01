@@ -28,8 +28,8 @@ void *memset (void *, int, size_t);
 int memcmp (const void *, const void *, size_t);
 void *memchr (const void *, int, size_t);
 
-char *strcpy (char *__restrict, const char *__restrict);
-char *strncpy (char *__restrict, const char *__restrict, size_t);
+char *strcpy (char *, const char *);
+char *strncpy (char *, const char *, size_t);
 
 char *strcat (char *__restrict, const char *__restrict);
 char *strncat (char *__restrict, const char *__restrict, size_t);

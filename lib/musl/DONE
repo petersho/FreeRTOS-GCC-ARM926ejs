@@ -3,3 +3,4 @@ memcpy
 memset
 strcpy
 memcmp
+strncpy

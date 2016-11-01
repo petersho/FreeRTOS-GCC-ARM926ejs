@@ -234,6 +234,8 @@ $(OBJDIR)memset.o : $(LIB_SRC)musl/src/string/memset.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 $(OBJDIR)memcmp.o : $(LIB_SRC)musl/src/string/memcmp.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+$(OBJDIR)strncpy.o : $(LIB_SRC)musl/src/string/strncpy.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # Cleanup directives:
 
