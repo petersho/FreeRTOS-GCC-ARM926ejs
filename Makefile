@@ -31,7 +31,7 @@ OBJCOPY = $(TOOLCHAIN)objcopy
 AR = $(TOOLCHAIN)ar
 
 # GCC flags
-CFLAG = -c
+CFLAG = -nostdinc -c
 OFLAG = -o
 INCLUDEFLAG = -I
 CPUFLAG = -mcpu=arm926ej-s
@@ -89,9 +89,10 @@ DRIVERS_OBJS = timer.o interrupt.o uart.o
 
 APP_OBJS = init.o main.o print.o receive.o
 # nostdlib.o must be commented out if standard lib is going to be linked!
-APP_OBJS += nostdlib.o
+#APP_OBJS += nostdlib.o
+APP_OBJS +=
 
-LIB_OBJS = memcpy.o
+LIB_OBJS = memcpy.o memset.o strcpy.o
 
 # All object files specified above are prefixed the intermediate directory
 OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
@@ -107,9 +108,9 @@ INC_DRIVERS = $(DRIVERS_SRC)include/
 INC_LIBS_MUSL = $(LIB_SRC)musl/include/
 
 # Complete include flags to be passed to $(CC) where necessary
-INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC)
-INC_FLAG_DRIVERS = $(INCLUDEFLAG)$(INC_DRIVERS)
 INC_FLAG_MUSL = $(INCLUDEFLAG)$(INC_LIBS_MUSL)
+INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL)
+INC_FLAG_DRIVERS = $(INCLUDEFLAG)$(INC_DRIVERS)
 
 # Dependency on HW specific settings
 DEP_BSP = $(INC_DRIVERS)bsp.h
@@ -130,7 +131,7 @@ $(OBJDIR) :
 	mkdir -p $@
 
 $(ELF_IMAGE) : $(OBJS) $(LINKER_SCRIPT)
-	$(LD) -nostdinc -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(OFLAG) $@
+	$(LD) -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(OFLAG) $@
 
 debug : _debug_flags all
 
@@ -198,13 +199,13 @@ $(OBJDIR)heap_5.o : $(FREERTOS_MEMMANG_SRC)heap_5.c
 # Drivers
 
 $(OBJDIR)timer.o : $(DRIVERS_SRC)timer.c $(DEP_BSP)
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
 
 $(OBJDIR)interrupt.o : $(DRIVERS_SRC)interrupt.c $(DEP_BSP)
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
 
 $(OBJDIR)uart.o : $(DRIVERS_SRC)uart.c $(DEP_BSP)
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
 
 # Demo application
 
@@ -212,7 +213,7 @@ $(OBJDIR)main.o : $(APP_SRC)main.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 $(OBJDIR)init.o : $(APP_SRC)init.c $(DEP_BSP)
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
 
 $(OBJDIR)print.o : $(APP_SRC)print.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
@@ -221,13 +222,16 @@ $(OBJDIR)receive.o : $(APP_SRC)receive.c $(DEP_BSP)
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
 
 $(OBJDIR)nostdlib.o : $(APP_SRC)nostdlib.c
-	$(CC) $(CFLAG) $(CFLAGS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 
 # libs
 $(OBJDIR)memcpy.o : $(LIB_SRC)musl/src/string/memcpy.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
-
+$(OBJDIR)strcpy.o : $(LIB_SRC)musl/src/string/strcpy.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+$(OBJDIR)memset.o : $(LIB_SRC)musl/src/string/memset.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # Cleanup directives:
 

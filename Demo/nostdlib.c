@@ -55,6 +55,7 @@ static inline size_t minval(size_t x, size_t y)
  *
  * @return 'ptr' is returned
  */
+#if 0
 void* memset(void* ptr, int value, size_t num )
 {
     unsigned char* p = (unsigned char*) ptr;
@@ -85,7 +86,7 @@ void* memset(void* ptr, int value, size_t num )
 endf:
     return ptr;
 }
-
+#endif
 
 /**
  * Copy block of memory.
@@ -187,6 +188,7 @@ void* memcpy(void* destination, const void* source, size_t num )
  *
  * @return 'destination' is returned or NULL if any parameter equals NULL
  */
+#if 0
 char* strcpy (char* destination, const char* source)
 {
     const char* srcptr = source;
@@ -208,3 +210,4 @@ char* strcpy (char* destination, const char* source)
 
     return destination;
 }
+#endif
