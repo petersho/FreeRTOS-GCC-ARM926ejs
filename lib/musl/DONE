@@ -1,0 +1,4 @@
+string.h:
+memcpy
+memset
+strcpy
