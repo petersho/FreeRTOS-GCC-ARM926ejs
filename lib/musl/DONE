@@ -2,3 +2,4 @@ string.h:
 memcpy
 memset
 strcpy
+memcmp
