@@ -1,12 +1,12 @@
 #include <string.h>
 #include <stdint.h>
 #include <limits.h>
-#include "libc.h"
+#include <internal/libc.h>
 
 #define ALIGN (sizeof(size_t)-1)
 #define ONES ((size_t)-1/UCHAR_MAX)
 #define HIGHS (ONES * (UCHAR_MAX/2+1))
-#define HASZERO(x) ((x)-ONES & ~(x) & HIGHS)
+#define HASZERO(x) (((x)-ONES) & ~(x) & HIGHS)
 
 char *__stpncpy(char *d, const char *s, size_t n)
 {

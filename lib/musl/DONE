@@ -1,6 +1,12 @@
 string.h:
-memcpy
-memset
-strcpy
-memcmp
-strncpy
+memchr.c
+memcmp.c
+memcpy.c
+memset.c
+stpncpy.c
+strchr.c
+strchrnul.c
+strcpy.c
+strlen.c
+strncpy.c
+strstr.c
