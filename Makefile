@@ -93,7 +93,7 @@ APP_OBJS = init.o main.o print.o receive.o
 APP_OBJS +=
 
 LIB_OBJS = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stpncpy.o strncpy.o strstr.o strchrnul.o strlen.o \
-		memmem.o bcmp.o memmove.o
+		memmem.o bcmp.o memmove.o bcopy.o
 
 # All object files specified above are prefixed the intermediate directory
 OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
@@ -254,6 +254,8 @@ $(OBJDIR)memmem.o : $(LIB_SRC)musl/src/string/memmem.c
 $(OBJDIR)bcmp.o : $(LIB_SRC)musl/src/string/bcmp.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 $(OBJDIR)memmove.o : $(LIB_SRC)musl/src/string/memmove.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+$(OBJDIR)bcopy.o : $(LIB_SRC)musl/src/string/bcopy.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # Cleanup directives:
