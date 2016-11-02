@@ -12,3 +12,4 @@ strncpy.c
 strstr.c
 memmem.c
 bcmp.c
+memmove.c
