@@ -10,3 +10,4 @@ strcpy.c
 strlen.c
 strncpy.c
 strstr.c
+memmem.c

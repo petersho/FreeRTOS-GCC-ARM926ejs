@@ -92,7 +92,8 @@ APP_OBJS = init.o main.o print.o receive.o
 #APP_OBJS += nostdlib.o
 APP_OBJS +=
 
-LIB_OBJS = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stpncpy.o strncpy.o strstr.o strchrnul.o strlen.o
+LIB_OBJS = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stpncpy.o strncpy.o strstr.o strchrnul.o strlen.o \
+		memmem.o
 
 # All object files specified above are prefixed the intermediate directory
 OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
@@ -247,6 +248,8 @@ $(OBJDIR)strstr.o : $(LIB_SRC)musl/src/string/strstr.c
 $(OBJDIR)strchrnul.o : $(LIB_SRC)musl/src/string/strchrnul.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 $(OBJDIR)strlen.o : $(LIB_SRC)musl/src/string/strlen.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+$(OBJDIR)memmem.o : $(LIB_SRC)musl/src/string/memmem.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # Cleanup directives:
