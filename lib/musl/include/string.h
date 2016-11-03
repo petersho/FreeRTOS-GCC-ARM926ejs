@@ -75,7 +75,7 @@ size_t strxfrm_l (char *__restrict, const char *__restrict, size_t, locale_t);
 
 #if defined(_XOPEN_SOURCE) || defined(_GNU_SOURCE) \
  || defined(_BSD_SOURCE)
-void *memccpy (void *__restrict, const void *__restrict, int, size_t);
+void *memccpy (void *, const void *, int, size_t);
 #endif
 
 #if defined(_GNU_SOURCE) || defined(_BSD_SOURCE)
