@@ -1,17 +1,20 @@
-string.h:
-memchr.c
-memcmp.c
-memcpy.c
-memset.c
-stpncpy.c
-strchr.c
-strchrnul.c
-strcpy.c
-strlen.c
-strncpy.c
-strstr.c
-memmem.c
-bcmp.c
-memmove.c
-bcopy.c
-index.c
+Name			Test
+========================================
+string.h:		Not yet
+memchr.c:		Not yet
+memcmp.c:		Not yet
+memcpy.c:		Not yet
+memset.c:		Not yet
+stpncpy.c:		Not yet
+strchr.c:		Not yet
+strchrnul.c:		Not yet
+strcpy.c:		Not yet
+strlen.c:		Not yet
+strncpy.c:		Not yet
+strstr.c:		Not yet
+memmem.c:		Not yet
+bcmp.c:			Not yet
+memmove.c:		Not yet
+bcopy.c:		Not yet
+index.c:		Not yet
+memccpy.c:		Not yet
