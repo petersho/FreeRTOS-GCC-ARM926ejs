@@ -297,7 +297,7 @@ $(OBJDIR)core.o : $(CLI_SRC)core.c
 
 # musl pthread porting
 $(OBJDIR)pthread_create.o : $(LIB_SRC)musl/src/thread/pthread_create.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 
 
