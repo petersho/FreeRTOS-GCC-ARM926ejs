@@ -31,7 +31,7 @@ void *memchr (const void *, int, size_t);
 char *strcpy (char *, const char *);
 char *strncpy (char *, const char *, size_t);
 
-char *strcat (char *__restrict, const char *__restrict);
+char *strcat (char *, const char *);
 char *strncat (char *__restrict, const char *__restrict, size_t);
 
 int strcmp (const char *, const char *);

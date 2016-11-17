@@ -22,3 +22,4 @@ strtok.c:		Not yet
 strspn.c:		Not yet
 strcspn.c:		Not yet
 strcmp.c:		Not yet
+strcat.c:		Not yet
