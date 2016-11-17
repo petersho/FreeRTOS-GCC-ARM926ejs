@@ -97,7 +97,7 @@ APP_OBJS +=
 
 LIB_OBJS_MUSL_STRING = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stpncpy.o strncpy.o strstr.o strchrnul.o strlen.o \
 		memmem.o bcmp.o memmove.o bcopy.o index.o memccpy.o strtok.o strspn.o strcspn.o strcmp.o strcat.o
-LIB_OBJS_MUSL_STDLIB = abs.o atoi.o atol.o
+LIB_OBJS_MUSL_STDLIB = abs.o atoi.o atol.o strtol.o
 
 LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB)
 
@@ -285,6 +285,8 @@ $(OBJDIR)abs.o : $(LIB_SRC)musl/src/stdlib/abs.c
 $(OBJDIR)atoi.o : $(LIB_SRC)musl/src/stdlib/atoi.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 $(OBJDIR)atol.o : $(LIB_SRC)musl/src/stdlib/atol.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+$(OBJDIR)strtol.o : $(LIB_SRC)musl/src/stdlib/strtol.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # Command line interface

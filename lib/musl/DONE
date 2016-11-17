@@ -27,3 +27,4 @@ strcat.c:		Not yet
 abs.c			Not yet
 atoi.c			Not yet
 atol.c			Not yet
+strtol.c		Not yet(Not implement)
