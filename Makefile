@@ -99,7 +99,9 @@ LIB_OBJS_MUSL_STRING = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stp
 		memmem.o bcmp.o memmove.o bcopy.o index.o memccpy.o strtok.o strspn.o strcspn.o strcmp.o strcat.o
 LIB_OBJS_MUSL_STDLIB = abs.o atoi.o atol.o strtol.o
 
-LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB)
+LIB_OBJS_MUSL_PTHREAD = pthread_create.o
+
+LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB) $(LIB_OBJS_MUSL_PTHREAD)
 
 CLI_BOJS = core.o
 
@@ -292,6 +294,12 @@ $(OBJDIR)strtol.o : $(LIB_SRC)musl/src/stdlib/strtol.c
 # Command line interface
 $(OBJDIR)core.o : $(CLI_SRC)core.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+# musl pthread porting
+$(OBJDIR)pthread_create.o : $(LIB_SRC)musl/src/thread/pthread_create.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+
 
 # Cleanup directives:
 

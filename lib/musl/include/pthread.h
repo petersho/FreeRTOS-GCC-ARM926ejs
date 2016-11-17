@@ -74,7 +74,7 @@ extern "C" {
 #define PTHREAD_BARRIER_SERIAL_THREAD (-1)
 
 
-int pthread_create(pthread_t *__restrict, const pthread_attr_t *__restrict, void *(*)(void *), void *__restrict);
+int pthread_create(pthread_t *, const pthread_attr_t *, void *(*)(void *), void *);
 int pthread_detach(pthread_t);
 _Noreturn void pthread_exit(void *);
 int pthread_join(pthread_t, void **);
