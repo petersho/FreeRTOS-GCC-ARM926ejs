@@ -61,6 +61,9 @@ FREERTOS_PORT_SRC = $(FREERTOS_SRC)portable/$(PORT_COMP_TARG)
 # Directory with HW drivers' source files
 DRIVERS_SRC = drivers/
 
+# Directory with command line interface
+CLI_SRC = Cli/
+
 # Directory with demo specific source (and header) files
 APP_SRC = Demo/
 
@@ -98,8 +101,10 @@ LIB_OBJS_MUSL_STDLIB = abs.o
 
 LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB)
 
+CLI_BOJS = core.o
+
 # All object files specified above are prefixed the intermediate directory
-OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
+OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_BOJS) $(APP_OBJS))
 
 # Definition of the linker script and final targets
 LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
@@ -277,6 +282,11 @@ $(OBJDIR)strcat.o : $(LIB_SRC)musl/src/string/strcat.c
 
 $(OBJDIR)abs.o : $(LIB_SRC)musl/src/stdlib/abs.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+# Command line interface
+$(OBJDIR)core.o : $(CLI_SRC)core.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
 # Cleanup directives:
 
 clean_obj :
