@@ -18,3 +18,6 @@ memmove.c:		Not yet
 bcopy.c:		Not yet
 index.c:		Not yet
 memccpy.c:		Not yet
+strtok.c:		Not yet
+strspn.c:		Not yet
+strcspn.c:		Not yet
