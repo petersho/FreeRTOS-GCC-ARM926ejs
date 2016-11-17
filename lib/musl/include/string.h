@@ -47,7 +47,7 @@ size_t strcspn (const char *, const char *);
 size_t strspn (const char *, const char *);
 char *strpbrk (const char *, const char *);
 char *strstr (const char *, const char *);
-char *strtok (char *__restrict, const char *__restrict);
+char *strtok (char *, const char *);
 
 size_t strlen (const char *);
 

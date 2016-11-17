@@ -21,3 +21,4 @@ memccpy.c:		Not yet
 strtok.c:		Not yet
 strspn.c:		Not yet
 strcspn.c:		Not yet
+strcmp.c:		Not yet
