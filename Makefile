@@ -92,8 +92,11 @@ APP_OBJS = init.o main.o print.o receive.o
 #APP_OBJS += nostdlib.o
 APP_OBJS +=
 
-LIB_OBJS = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stpncpy.o strncpy.o strstr.o strchrnul.o strlen.o \
-		memmem.o bcmp.o memmove.o bcopy.o index.o memccpy.o strtok.o strspn.o strcspn.o strcmp.o strcat.o \
+LIB_OBJS_MUSL_STRING = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stpncpy.o strncpy.o strstr.o strchrnul.o strlen.o \
+		memmem.o bcmp.o memmove.o bcopy.o index.o memccpy.o strtok.o strspn.o strcspn.o strcmp.o strcat.o
+LIB_OBJS_MUSL_STDLIB = abs.o
+
+LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB)
 
 # All object files specified above are prefixed the intermediate directory
 OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(APP_OBJS))
@@ -272,6 +275,8 @@ $(OBJDIR)strcmp.o : $(LIB_SRC)musl/src/string/strcmp.c
 $(OBJDIR)strcat.o : $(LIB_SRC)musl/src/string/strcat.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
+$(OBJDIR)abs.o : $(LIB_SRC)musl/src/stdlib/abs.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 # Cleanup directives:
 
 clean_obj :
