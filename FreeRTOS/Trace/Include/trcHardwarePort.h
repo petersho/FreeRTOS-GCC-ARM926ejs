@@ -113,6 +113,7 @@
 #define PORT_MICROCHIP_PIC32MZ				14	/*	Yes			Any					*/
 #define PORT_ARM_CORTEX_A9					15	/*	No			Any					*/
 #define PORT_ARM_CORTEX_M0					16	/*	Yes			Any					*/
+#define PORT_ARM_ARM926EJS				17
 
 #include "trcConfig.h"
 
@@ -231,6 +232,14 @@
 	#define HWTC_DIVISOR 4
 
 	#define IRQ_PRIORITY_ORDER 0 // lower IRQ priority values are more significant
+
+#elif (SELECTED_PORT == PORT_ARM_ARM926EJS)
+    #define HWTC_COUNT_DIRECTION DIRECTION_DECREMENTING
+    #define HWTC_COUNT (*((uint32_t*)0x00010000))
+    #define HWTC_PERIOD ((*(uint32_t*)0x00010000))
+    #define HWTC_DIVISOR 2
+	
+    #define IRQ_PRIORITY_ORDER 0 // lower IRQ priority values are more significant
 
 #elif (SELECTED_PORT == PORT_ARM_CORTEX_M0)
     #define HWTC_COUNT_DIRECTION DIRECTION_DECREMENTING

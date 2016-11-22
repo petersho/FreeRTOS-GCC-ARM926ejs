@@ -71,10 +71,11 @@
  * PORT_MICROCHIP_PIC32MZ				14		Yes			Any			
  * PORT_ARM_CORTEX_A9					15		No			Any
  * PORT_ARM_CORTEX_M0					16		Yes			Any
+ * PORT_ARM_ARM926EJS					17		Yes			Any
  *****************************************************************************/
 
 // Set the port setting here!
-#define SELECTED_PORT PORT_NOT_SET
+#define SELECTED_PORT PORT_ARM_ARM926EJS
 
 #if (SELECTED_PORT == PORT_ARM_CortexM)
 	/* For ARM Cortex-M: make sure ARM's CMSIS library is included here, which

@@ -51,6 +51,7 @@ OBJDIR = obj/
 
 # FreeRTOS source base directory
 FREERTOS_SRC = FreeRTOS/Source/
+FREERTOS_TRACE_SRC = FreeRTOS/Trace/
 
 # Directory with memory management source files
 FREERTOS_MEMMANG_SRC = $(FREERTOS_SRC)portable/MemMang/
@@ -91,6 +92,7 @@ STARTUP_OBJ = startup.o
 DRIVERS_OBJS = timer.o interrupt.o uart.o
 
 APP_OBJS = init.o main.o print.o receive.o
+TRACE_OBJS = trcKernelPort.o trcHardwarePort.o trcBase.o trcKernel.o trcUser.o
 # nostdlib.o must be commented out if standard lib is going to be linked!
 #APP_OBJS += nostdlib.o
 APP_OBJS +=
@@ -106,7 +108,7 @@ LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB) $(LIB_OBJS_MUSL_PTHR
 CLI_BOJS = core.o
 
 # All object files specified above are prefixed the intermediate directory
-OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_BOJS) $(APP_OBJS))
+OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_BOJS) $(TRACE_OBJS) $(APP_OBJS))
 
 # Definition of the linker script and final targets
 LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
@@ -117,10 +119,11 @@ TARGET = image.bin
 INC_FREERTOS = $(FREERTOS_SRC)include/
 INC_DRIVERS = $(DRIVERS_SRC)include/
 INC_LIBS_MUSL = $(LIB_SRC)musl/include/
+INC_TRACE = $(FREERTOS_TRACE_SRC)Include/
 
 # Complete include flags to be passed to $(CC) where necessary
 INC_FLAG_MUSL = $(INCLUDEFLAG)$(INC_LIBS_MUSL)
-INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL)
+INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $(INCLUDEFLAG)$(INC_TRACE)
 INC_FLAG_DRIVERS = $(INCLUDEFLAG)$(INC_DRIVERS)
 
 # Dependency on HW specific settings
@@ -300,6 +303,17 @@ $(OBJDIR)pthread_create.o : $(LIB_SRC)musl/src/thread/pthread_create.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 
+# Trace porting
+$(OBJDIR)trcKernelPort.o : $(FREERTOS_TRACE_SRC)trcKernelPort.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+$(OBJDIR)trcHardwarePort.o : $(FREERTOS_TRACE_SRC)trcHardwarePort.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+$(OBJDIR)trcBase.o : $(FREERTOS_TRACE_SRC)trcBase.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+$(OBJDIR)trcKernel.o : $(FREERTOS_TRACE_SRC)trcKernel.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+$(OBJDIR)trcUser.o : $(FREERTOS_TRACE_SRC)trcUser.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 # Cleanup directives:
 
