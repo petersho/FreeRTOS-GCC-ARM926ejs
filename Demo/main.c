@@ -62,6 +62,7 @@ void vTaskFunction( void *pvParameters )
     const portCHAR* taskName;
     UBaseType_t  delay;
     paramStruct* params = (paramStruct*) pvParameters;
+    int i = 0;
 
     taskName = ( NULL==params || NULL==params->text ? defaultText : params->text );
     delay = ( NULL==params ? defaultDelay : params->delay);
@@ -70,7 +71,8 @@ void vTaskFunction( void *pvParameters )
     {
         /* Print out the name of this task. */
 
-        vPrintMsg(taskName);
+        //vPrintMsg(taskName);
+	print_msg("%s i = %d\n", taskName, i++);
 
         vTaskDelay( delay / portTICK_RATE_MS );
     }
@@ -127,7 +129,7 @@ void vPeriodicTaskFunction(void* pvParameters)
 /* Parameters for two tasks */
 static const paramStruct tParam[2] =
 {
-    (paramStruct) { .text="Task1\r\n", .delay=2000 },
+    (paramStruct) { .text="Task1", .delay=2000 },
     (paramStruct) { .text="Periodic task\r\n", .delay=3000 }
 };
 
