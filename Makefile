@@ -30,6 +30,8 @@ LD = $(TOOLCHAIN)ld
 OBJCOPY = $(TOOLCHAIN)objcopy
 AR = $(TOOLCHAIN)ar
 
+PLATFORM_LIBGCC := -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc
+
 # GCC flags
 CFLAG = -nostdinc -c
 OFLAG = -o
@@ -145,7 +147,7 @@ $(OBJDIR) :
 	mkdir -p $@
 
 $(ELF_IMAGE) : $(OBJS) $(LINKER_SCRIPT)
-	$(LD) -nostdlib -L $(OBJDIR) -L /home/peter/Tools/gcc-linaro-5.3-2016.02-x86_64_arm-eabi/lib/gcc/arm-eabi/5.3.1 -T $(LINKER_SCRIPT) $(OBJS) -lgcc $(OFLAG) $@
+	$(LD) -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(PLATFORM_LIBGCC) $(OFLAG) $@
 
 debug : _debug_flags all
 
