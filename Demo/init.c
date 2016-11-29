@@ -26,7 +26,7 @@ limitations under the License.
  */
 
  #include <stdint.h>
-
+#include <trcUser.h>
  #include "bsp.h"
 
  #include "interrupt.h"
@@ -63,5 +63,9 @@ limitations under the License.
      {
          uart_init(i);
      }
+
+     /* Init Trace Recorder */
+     vTraceInitTraceData();
+     uiTraceStart();
 
 }

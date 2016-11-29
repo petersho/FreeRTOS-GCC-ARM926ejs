@@ -234,10 +234,10 @@
 	#define IRQ_PRIORITY_ORDER 0 // lower IRQ priority values are more significant
 
 #elif (SELECTED_PORT == PORT_ARM_ARM926EJS)
-    #define HWTC_COUNT_DIRECTION DIRECTION_DECREMENTING
-    #define HWTC_COUNT (*((uint32_t*)0x00010000))
-    #define HWTC_PERIOD ((*(uint32_t*)0x00010000))
-    #define HWTC_DIVISOR 2
+    #define HWTC_COUNT_DIRECTION DIRECTION_INCREMENTING
+    #define HWTC_COUNT (*((uint32_t*)0x101E2004))
+    #define HWTC_PERIOD ((*(uint32_t*)0x101E2000))
+    #define HWTC_DIVISOR 1
 	
     #define IRQ_PRIORITY_ORDER 0 // lower IRQ priority values are more significant
 

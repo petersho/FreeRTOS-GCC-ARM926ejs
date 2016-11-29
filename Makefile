@@ -22,7 +22,7 @@
 # See comments in "setenv.sh" for more details about downloading it
 # and setting the appropriate environment variables.
 
-TOOLCHAIN = arm-none-eabi-
+TOOLCHAIN = arm-eabi-
 CC = $(TOOLCHAIN)gcc
 CXX = $(TOOLCHAIN)g++
 AS = $(TOOLCHAIN)as
@@ -98,7 +98,7 @@ TRACE_OBJS = trcKernelPort.o trcHardwarePort.o trcBase.o trcKernel.o trcUser.o
 APP_OBJS +=
 
 LIB_OBJS_MUSL_STRING = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stpncpy.o strncpy.o strstr.o strchrnul.o strlen.o \
-		memmem.o bcmp.o memmove.o bcopy.o index.o memccpy.o strtok.o strspn.o strcspn.o strcmp.o strcat.o
+		memmem.o bcmp.o memmove.o bcopy.o index.o memccpy.o strtok.o strspn.o strcspn.o strcmp.o strcat.o strncmp.o
 LIB_OBJS_MUSL_STDLIB = abs.o atoi.o atol.o strtol.o
 
 LIB_OBJS_MUSL_PTHREAD = pthread_create.o
@@ -145,7 +145,7 @@ $(OBJDIR) :
 	mkdir -p $@
 
 $(ELF_IMAGE) : $(OBJS) $(LINKER_SCRIPT)
-	$(LD) -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(OFLAG) $@
+	$(LD) -nostdlib -L $(OBJDIR) -L /home/peter/Tools/gcc-linaro-5.3-2016.02-x86_64_arm-eabi/lib/gcc/arm-eabi/5.3.1 -T $(LINKER_SCRIPT) $(OBJS) -lgcc $(OFLAG) $@
 
 debug : _debug_flags all
 
@@ -158,7 +158,7 @@ _debug_flags :
 # Startup code, implemented in assembler
 
 $(OBJDIR)startup.o : $(APP_SRC)startup.s
-	$(AS) $(CPUFLAG) $< $(OFLAG) $@
+	$(AS) -g $(CPUFLAG) $< $(OFLAG) $@
 
 
 # FreeRTOS core
@@ -227,7 +227,7 @@ $(OBJDIR)main.o : $(APP_SRC)main.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 $(OBJDIR)init.o : $(APP_SRC)init.c $(DEP_BSP)
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
 
 $(OBJDIR)print.o : $(APP_SRC)print.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
@@ -284,6 +284,8 @@ $(OBJDIR)strcmp.o : $(LIB_SRC)musl/src/string/strcmp.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 $(OBJDIR)strcat.o : $(LIB_SRC)musl/src/string/strcat.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+$(OBJDIR)strncmp.o : $(LIB_SRC)musl/src/string/strncmp.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 $(OBJDIR)abs.o : $(LIB_SRC)musl/src/stdlib/abs.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
@@ -300,7 +302,7 @@ $(OBJDIR)core.o : $(CLI_SRC)core.c
 
 # musl pthread porting
 $(OBJDIR)pthread_create.o : $(LIB_SRC)musl/src/thread/pthread_create.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $(INC_FLAGS) $< $(OFLAG) $@
 
 
 # Trace porting
