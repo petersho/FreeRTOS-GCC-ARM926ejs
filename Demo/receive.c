@@ -22,39 +22,36 @@ limitations under the License.
  */
 
 #include <string.h>
-
 #include <FreeRTOS.h>
 #include <queue.h>
 #include <task.h>
-
 #include "app_config.h"
 #include "bsp.h"
 #include "uart.h"
 #include "interrupt.h"
-
 #include "print.h"
 
 
 /* Numeric codes for special keys: */
 
 /* This code is received when BackSpace is pressed: */
-#define CODE_BS             ( 0x7F )
+#define CODE_BS			( 0x7F )
 /* Enter (CR): */
-#define CODE_CR             ( 0x0D )
+#define CODE_CR			( 0x0D )
 
 
 /* This string is displayed first when Enter is pressed: */
-#define MSG_TEXT            "You entered: \""
+#define MSG_TEXT		"You entered: \""
 /* Hardcoded strlen(MSG_TEXT): */
-#define MSG_OFFSET          ( 14 )
+#define MSG_OFFSET		( 14 )
 /*
  * Total length of a string buffer:
  * MSG_OFFSET + RECV_BUFFER_SIZE + additional 4 characters for "\"\r\n\0"
  */
-#define RECV_TOTAL_BUFFER_LEN        ( MSG_OFFSET + RECV_BUFFER_LEN + 3 + 1 )
+#define RECV_TOTAL_BUFFER_LEN	(MSG_OFFSET + RECV_BUFFER_LEN + 3 + 1)
 
 /* Allocated "circular" buffer */
-static portCHAR buf[ RECV_BUFFER_SIZE ][ RECV_TOTAL_BUFFER_LEN ];
+static portCHAR buf[RECV_BUFFER_SIZE][RECV_TOTAL_BUFFER_LEN];
 
 /* Position of the currently available slot in the buffer */
 static uint16_t bufCntr = 0;
@@ -83,51 +80,47 @@ static void recvIsrHandler(void);
  */
 int16_t recvInit(uint8_t uart_nr)
 {
-    /* Obtain the UART's IRQ from BSP */
-    const uint8_t uartIrqs[BSP_NR_UARTS] = BSP_UART_IRQS;
-    const uint8_t irq = ( uart_nr<BSP_NR_UARTS ?
-                             uartIrqs[uart_nr] :
-                             (uint8_t) -1 );
-    uint16_t i;
+	/* Obtain the UART's IRQ from BSP */
+	const uint8_t uartIrqs[BSP_NR_UARTS] = BSP_UART_IRQS;
+	const uint8_t irq = ( uart_nr<BSP_NR_UARTS ?
+			uartIrqs[uart_nr] :
+			(uint8_t) -1 );
+	uint16_t i;
 
-    for ( i=0; i<RECV_BUFFER_SIZE; ++i )
-    {
-        memset((void*) buf[i], '\0', RECV_TOTAL_BUFFER_LEN);
-        strcpy(buf[i], MSG_TEXT);
-    }
+	for ( i=0; i<RECV_BUFFER_SIZE; ++i ) {
+		memset((void*) buf[i], '\0', RECV_TOTAL_BUFFER_LEN);
+		strcpy(buf[i], MSG_TEXT);
+	}
 
-    bufCntr = 0;
-    bufPos = 0;
+	bufCntr = 0;
+	bufPos = 0;
 
-    /* Check if UART number is valid */
-    if ( uart_nr >= BSP_NR_UARTS )
-    {
-        return pdFAIL;
-    }
+	/* Check if UART number is valid */
+	if ( uart_nr >= BSP_NR_UARTS ) {
+		return pdFAIL;
+	}
 
-    recvUartNr = uart_nr;
+	recvUartNr = uart_nr;
 
-    /* Create and assert a queue for received characters */
-    recvQueue = xQueueCreate(RECV_QUEUE_SIZE, sizeof(portCHAR));
-    if ( 0 == recvQueue )
-    {
-        return pdFAIL;
-    }
+	/* Create and assert a queue for received characters */
+	recvQueue = xQueueCreate(RECV_QUEUE_SIZE, sizeof(portCHAR));
+	if (0 == recvQueue) {
+		return pdFAIL;
+	}
 
-    /* Attempt to register UART's IRQ on VIC */
-    if ( pic_registerIrq(irq, &recvIsrHandler, 50) < 0 )
-    {
-        return pdFAIL;
-    }
+	/* Attempt to register UART's IRQ on VIC */
+	if (pic_registerIrq(irq, &recvIsrHandler, 50) < 0) {
+		return pdFAIL;
+	}
 
-    /* Enable the UART's IRQ on VIC */
-    pic_enableInterrupt(irq);
+	/* Enable the UART's IRQ on VIC */
+	pic_enableInterrupt(irq);
 
-    /* Configure the UART to receive data and trigger interrupts on receive */
-    uart_enableRx(recvUartNr);
-    uart_enableRxInterrupt(recvUartNr);
+	/* Configure the UART to receive data and trigger interrupts on receive */
+	uart_enableRx(recvUartNr);
+	uart_enableRxInterrupt(recvUartNr);
 
-    return pdPASS;
+	return pdPASS;
 }
 
 
