@@ -64,8 +64,8 @@ void vTaskFunction( void *pvParameters )
 	for( ; ; ) {
 		/* Print out the name of this task. */
 
-		//vPrintMsg(taskName);
-		print_msg("%s i = %d\n", taskName, i++);
+		vPrintMsg(taskName);
+		//print_msg("%s i = %d\n", taskName, i++);
 
 		vTaskDelay( delay / portTICK_RATE_MS );
 	}
