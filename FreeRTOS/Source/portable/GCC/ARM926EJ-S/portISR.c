@@ -173,7 +173,9 @@ void vFreeRTOS_ISR( void ) __attribute__((naked));
 void vFreeRTOS_ISR( void )
 {
     portSAVE_CONTEXT();
+    ulCriticalNesting++;
     _pic_IrqHandler();
+    ulCriticalNesting--;
     portRESTORE_CONTEXT();
 }
 

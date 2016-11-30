@@ -105,7 +105,7 @@ static void vInitStartMarkers(void);
 #include "recorderdata_linker_pragma.h"
 #endif
 
-RecorderDataType RecorderData;
+RecorderDataType RecorderData __attribute__ ((section (".bss")));
 
 #endif
 
