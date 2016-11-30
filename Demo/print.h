@@ -40,5 +40,6 @@ void vDirectPrintMsg(const portCHAR* msg);
 
 void vDirectPrintCh(portCHAR ch);
 
+void print_msg(const char *fmt, ...);
 
 #endif  /* _PRINT_H_ */
