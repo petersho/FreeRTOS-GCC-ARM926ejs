@@ -62,7 +62,7 @@ FREERTOS_MEMMANG_SRC = $(FREERTOS_SRC)portable/MemMang/
 FREERTOS_PORT_SRC = $(FREERTOS_SRC)portable/$(PORT_COMP_TARG)
 
 # Directory with HW drivers' source files
-DRIVERS_SRC = drivers/
+DRIVERS_SRC = Drivers/
 
 # Directory with command line interface
 CLI_SRC = Cli/
