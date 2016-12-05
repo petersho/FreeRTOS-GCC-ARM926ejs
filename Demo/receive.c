@@ -52,6 +52,7 @@ limitations under the License.
 
 /* Allocated "circular" buffer */
 static portCHAR buf[RECV_BUFFER_SIZE][RECV_TOTAL_BUFFER_LEN];
+static portCHAR cmdbuf[64];
 
 /* Position of the currently available slot in the buffer */
 static uint16_t bufCntr = 0;
@@ -120,6 +121,11 @@ int16_t recvInit(uint8_t uart_nr)
 	uart_enableRx(recvUartNr);
 	uart_enableRxInterrupt(recvUartNr);
 
+
+	// Init command list
+	init_cmd_register();
+	add_command_test();
+
 	return pdPASS;
 }
 
@@ -157,6 +163,7 @@ static void recvIsrHandler(void)
 void recvTask(void* params)
 {
     portCHAR ch;
+    int ret = 0;
 
     for ( ; ; )
     {
@@ -251,9 +258,11 @@ void recvTask(void* params)
                 if ( bufPos < RECV_BUFFER_LEN )
                 {
                     /* If the buffer is not full yet, append the character */
-                    buf[bufCntr][MSG_OFFSET + bufPos] = ch;
+                    //buf[bufCntr][MSG_OFFSET + bufPos] = ch;
+                    cmdbuf[bufPos] = ch;
                     /* and increase the position index: */
                     ++bufPos;
+                    vDirectPrintCh(ch);
                 }
 
                 break;
@@ -278,16 +287,19 @@ void recvTask(void* params)
             case CODE_CR :
             {
                 /* Append characters to terminate the string:*/
-                bufPos += MSG_OFFSET;
-                buf[bufCntr][bufPos++] = '"';
-                buf[bufCntr][bufPos++] = '\r';
-                buf[bufCntr][bufPos++] = '\n';
-                buf[bufCntr][bufPos]   = '\0';
+                //bufPos += MSG_OFFSET;
+                //buf[bufCntr][bufPos++] = '"';
+                //buf[bufCntr][bufPos++] = '\r';
+                //buf[bufCntr][bufPos++] = '\n';
+                //buf[bufCntr][bufPos]   = '\0';
                 /* Send the entire string to the print queue */
-                vPrintMsg(buf[bufCntr]);
+                //vPrintMsg(buf[bufCntr]);
+                cmdbuf[bufPos] = 0x0;
+                vDirectPrintMsg("\r\n");
+                ret = parse_cmd2(cmdbuf);
                 /* And switch to the next line of the "circular" buffer */
-                ++bufCntr;
-                bufCntr %= RECV_BUFFER_SIZE;
+                //++bufCntr;
+                //bufCntr %= RECV_BUFFER_SIZE;
                 /* "Reset" the position index */
                 bufPos = 0;
 

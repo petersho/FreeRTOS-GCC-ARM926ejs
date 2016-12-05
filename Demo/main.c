@@ -180,8 +180,8 @@ void main(void)
 		FreeRTOS_Error("Could not create task2\r\n");
 	}
 
-	vDirectPrintMsg("A text may be entered using a keyboard.\r\n");
-	vDirectPrintMsg("It will be displayed when 'Enter' is pressed.\r\n\r\n");
+	//vDirectPrintMsg("A text may be entered using a keyboard.\r\n");
+	//vDirectPrintMsg("It will be displayed when 'Enter' is pressed.\r\n\r\n");
 
 	/* Start the FreeRTOS scheduler */
 	vTaskStartScheduler();
