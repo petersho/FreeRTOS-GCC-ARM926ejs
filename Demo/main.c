@@ -56,7 +56,6 @@ void vTaskFunction( void *pvParameters )
 	const portCHAR* taskName;
 	UBaseType_t  delay;
 	paramStruct* params = (paramStruct*) pvParameters;
-	int i = 0;
 
 	taskName = ( NULL==params || NULL==params->text ? defaultText : params->text );
 	delay = ( NULL==params ? defaultDelay : params->delay);
