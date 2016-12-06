@@ -56,6 +56,7 @@ void vTaskFunction( void *pvParameters )
 	const portCHAR* taskName;
 	UBaseType_t  delay;
 	paramStruct* params = (paramStruct*) pvParameters;
+	int i = 0;
 
 	taskName = ( NULL==params || NULL==params->text ? defaultText : params->text );
 	delay = ( NULL==params ? defaultDelay : params->delay);
@@ -63,8 +64,8 @@ void vTaskFunction( void *pvParameters )
 	for( ; ; ) {
 		/* Print out the name of this task. */
 
-		vPrintMsg(taskName);
-		//print_msg("%s i = %d\n", taskName, i++);
+		//vPrintMsg(taskName);
+		print_msg("%s i = %d\n", taskName, i++);
 
 		vTaskDelay( delay / portTICK_RATE_MS );
 	}
@@ -160,22 +161,22 @@ void main(void)
 	}
 
 	/* Create a print gate keeper task: */
-	if ( pdPASS != xTaskCreate(printGateKeeperTask, "gk", 128, NULL,
+	if ( pdPASS != xTaskCreate(printGateKeeperTask, "gk", 256, NULL,
 			PRIOR_PRINT_GATEKEEPR, NULL) ) {
         FreeRTOS_Error("Could not create a print gate keeper task\r\n");
 	}
 
-	if ( pdPASS != xTaskCreate(recvTask, "recv", 128, NULL, PRIOR_RECEIVER, NULL) ) {
+	if ( pdPASS != xTaskCreate(recvTask, "recv", 256, NULL, PRIOR_RECEIVER, NULL) ) {
 		FreeRTOS_Error("Could not create a receiver task\r\n");
 	}
 
 	/* And finally create two tasks: */
-	if ( pdPASS != xTaskCreate(vTaskFunction, "task1", 128, (void*) &tParam[0],
+	if ( pdPASS != xTaskCreate(vTaskFunction, "task1", 256, (void*) &tParam[0],
 			PRIOR_PERIODIC, NULL) ) {
 		FreeRTOS_Error("Could not create task1\r\n");
 	}
 
-	if ( pdPASS != xTaskCreate(vPeriodicTaskFunction, "task2", 128, (void*) &tParam[1],
+	if ( pdPASS != xTaskCreate(vPeriodicTaskFunction, "task2", 256, (void*) &tParam[1],
 			PRIOR_FIX_FREQ_PERIODIC, NULL) ) {
 		FreeRTOS_Error("Could not create task2\r\n");
 	}

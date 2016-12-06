@@ -201,10 +201,9 @@ void vPrintChar(portCHAR ch)
  */
 void vDirectPrintMsg(const portCHAR* msg)
 {
-    if ( NULL != msg )
-    {
-        uart_print(printUartNr, msg);
-    }
+	if ( NULL != msg ) {
+		uart_print(printUartNr, msg);
+	}
 }
 
 
@@ -218,22 +217,22 @@ void vDirectPrintMsg(const portCHAR* msg)
  */
 void vDirectPrintCh(portCHAR ch)
 {
-    uart_printChar(printUartNr, ch);
+	uart_printChar(printUartNr, ch);
 }
 
 /*
  * For test only.....
  */
-#define CFG_PBSIZE		256
+#define CFG_PBSIZE		64
 
 size_t strnlen (const char *s, size_t count)
 //int strnlen(const char * s, unsigned int count)
 {
-    const char *sc;
+	const char *sc;
 
-    for (sc = s; count-- && *sc != '\0'; ++sc)
+	for (sc = s; count-- && *sc != '\0'; ++sc)
         /* nothing */;
-    return sc - s;
+	return sc - s;
 }
 
 /* we use this so that we can do without the ctype library */
@@ -241,20 +240,20 @@ size_t strnlen (const char *s, size_t count)
 
 static int skip_atoi(const char **s)
 {
-        int i=0;
+	int i=0;
 
-        while (is_digit(**s))
-                i = i*10 + *((*s)++) - '0';
-        return i;
+	while (is_digit(**s))
+		i = i*10 + *((*s)++) - '0';
+	return i;
 }
 
-#define ZEROPAD 1               /* pad with zero */
-#define SIGN    2               /* unsigned/signed long */
-#define PLUS    4               /* show plus */
-#define SPACE   8               /* space if plus */
-#define LEFT    16              /* left justified */
-#define SPECIAL 32              /* 0x */
-#define LARGE   64              /* use 'ABCDEF' instead of 'abcdef' */
+#define ZEROPAD	1               /* pad with zero */
+#define SIGN	2               /* unsigned/signed long */
+#define PLUS	4               /* show plus */
+#define SPACE	8               /* space if plus */
+#define LEFT	16              /* left justified */
+#define SPECIAL	32              /* 0x */
+#define LARGE	64              /* use 'ABCDEF' instead of 'abcdef' */
 
 #define do_div(n,base) ({ \
 int __res; \

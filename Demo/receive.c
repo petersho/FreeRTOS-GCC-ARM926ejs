@@ -297,6 +297,10 @@ void recvTask(void* params)
                 cmdbuf[bufPos] = 0x0;
                 vDirectPrintMsg("\r\n");
                 ret = parse_cmd2(cmdbuf);
+
+		if (ret != 0) { // Command not found!!
+			show_cmd_help();
+		}
                 /* And switch to the next line of the "circular" buffer */
                 //++bufCntr;
                 //bufCntr %= RECV_BUFFER_SIZE;
