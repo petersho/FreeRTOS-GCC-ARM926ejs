@@ -188,9 +188,14 @@ void vFreeRTOS_ISR( void )
  */
 void vTickISR( void )
 {
-
+	int ret = 0;
     /* Increment the RTOS tick count, then look for the highest priority
     task that is ready to run. */
+	ret = xTaskIncrementTick();
+
+	if (ret != 0)
+		vTaskSwitchContext();
+#if 0
     __asm volatile
     (
         "   BL xTaskIncrementTick   \t\n" \
@@ -199,7 +204,7 @@ void vTickISR( void )
         "   BL vTaskSwitchContext   \t\n" \
         "SkipContextSwitch:         \t\n"
     );
-
+#endif
     /* Acknowledge the interrupt on timer */
     timer_clearInterrupt(portTICK_TIMER, portTICK_TIMER_COUNTER);
 
