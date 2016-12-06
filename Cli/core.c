@@ -99,7 +99,7 @@ int show_cmd_help()
 	struct cmd_list *curr = topcmd;
 
 	while (curr->cmd != NULL) {
-		print_msg("%s\n", curr->cmd->usage);
+		vPrintf("%s\n", curr->cmd->usage);
 		//vPrintMsg("Help message\n");
 
 		if (curr->next_cmd != NULL) {

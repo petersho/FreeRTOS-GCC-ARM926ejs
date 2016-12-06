@@ -105,7 +105,9 @@ LIB_OBJS_MUSL_STDLIB = abs.o atoi.o atol.o strtol.o
 
 LIB_OBJS_MUSL_PTHREAD = pthread_create.o
 
-LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB) $(LIB_OBJS_MUSL_PTHREAD)
+LIB_OBJS_MUSL_STDIO = printf.o
+
+LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB) $(LIB_OBJS_MUSL_PTHREAD) $(LIB_OBJS_MUSL_STDIO)
 
 CLI_BOJS = core.o
 
@@ -147,7 +149,7 @@ $(OBJDIR) :
 	mkdir -p $@
 
 $(ELF_IMAGE) : $(OBJS) $(LINKER_SCRIPT)
-	$(LD) -nostdlib -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(PLATFORM_LIBGCC) $(OFLAG) $@
+	$(LD) -nostdlib -nodefaultlibs -L $(OBJDIR) -T $(LINKER_SCRIPT) $(OBJS) $(PLATFORM_LIBGCC) $(OFLAG) $@
 
 debug : _debug_flags all
 
@@ -296,6 +298,9 @@ $(OBJDIR)atoi.o : $(LIB_SRC)musl/src/stdlib/atoi.c
 $(OBJDIR)atol.o : $(LIB_SRC)musl/src/stdlib/atol.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 $(OBJDIR)strtol.o : $(LIB_SRC)musl/src/stdlib/strtol.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)printf.o : $(LIB_SRC)musl/src/stdio/printf.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # Command line interface

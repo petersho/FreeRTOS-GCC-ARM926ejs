@@ -24,10 +24,10 @@ limitations under the License.
 
 #include <FreeRTOS.h>
 #include <task.h>
-
 #include "app_config.h"
 #include "print.h"
 #include "receive.h"
+#include <stdio.h>
 
 /*
  * This diagnostic pragma will suppress the -Wmain warning,
@@ -65,7 +65,7 @@ void vTaskFunction( void *pvParameters )
 		/* Print out the name of this task. */
 
 		//vPrintMsg(taskName);
-		print_msg("%s i = %d\n", taskName, i++);
+		vPrintf("%s i = %d\n", taskName, i++);
 
 		vTaskDelay( delay / portTICK_RATE_MS );
 	}
@@ -98,7 +98,7 @@ void vPeriodicTaskFunction(void* pvParameters)
 	for( ; ; ) {
 		/* Print out the name of this task. */
 
-		vPrintMsg(taskName);
+		//vPrintMsg(taskName);
 
 		/*
 		 * The task will unblock exactly after 'delay' milliseconds (actually
@@ -153,7 +153,7 @@ void main(void)
 	 * When vTaskStartScheduler launches the first task, it will switch
 	 * to System mode and enable interrupt exceptions.
 	 */
-	vDirectPrintMsg("= = = T E S T   S T A R T E D = = =\r\n\r\n");
+	vPrintf("= = = T E S T   S T A R T E D = = =\n\n");
 
 	/* Init of receiver related tasks: */
 	if ( pdFAIL == recvInit(RECV_UART_NR) ) {

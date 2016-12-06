@@ -31,7 +31,6 @@ limitations under the License.
 #include "interrupt.h"
 #include "print.h"
 
-
 /* Numeric codes for special keys: */
 
 /* This code is received when BackSpace is pressed: */
@@ -136,19 +135,19 @@ int16_t recvInit(uint8_t uart_nr)
  */
 static void recvIsrHandler(void)
 {
-    portCHAR ch;
+	portCHAR ch;
 
-    /* Get the received character from the UART */
-    ch = uart_readChar(recvUartNr);
+	/* Get the received character from the UART */
+	ch = uart_readChar(recvUartNr);
 
-    /*
-     * Push it to the queue.
-     * Note, since this is not a FreeRTOS task,
-     * a *FromISR implementation of the command must be called!
-     */
-    xQueueSendToBackFromISR(recvQueue, (void*) &ch, 0);
-    /* And acknowledge the interrupt on the UART controller */
-    uart_clearRxInterrupt(recvUartNr);
+	/*
+	 * Push it to the queue.
+	 * Note, since this is not a FreeRTOS task,
+	 * a *FromISR implementation of the command must be called!
+	 */
+	xQueueSendToBackFromISR(recvQueue, (void*) &ch, 0);
+	/* And acknowledge the interrupt on the UART controller */
+	uart_clearRxInterrupt(recvUartNr);
 }
 
 
@@ -162,161 +161,158 @@ static void recvIsrHandler(void)
  */
 void recvTask(void* params)
 {
-    portCHAR ch;
-    int ret = 0;
+	portCHAR ch;
+	int ret = 0;
 
-    for ( ; ; )
-    {
-        /* The task is blocked until something appears in the queue */
-        xQueueReceive(recvQueue, (void*) &ch, portMAX_DELAY);
+	for (;;) {
+		/* The task is blocked until something appears in the queue */
+		xQueueReceive(recvQueue, (void*) &ch, portMAX_DELAY);
 
-        /*
-         * Although a bit long, 'switch' offers a convenient way to
-         * insert or remove valid characters.
-         */
-        switch (ch)
-        {
-            /* "Ordinary" valid characters that will be appended to a buffer */
+		/*
+		 * Although a bit long, 'switch' offers a convenient way to
+		 * insert or remove valid characters.
+		 */
+		switch (ch) {
+			/* "Ordinary" valid characters that will be appended to a buffer */
 
-            /* Uppercase letters 'A' .. 'Z': */
-            case 'A' :
-            case 'B' :
-            case 'C' :
-            case 'D' :
-            case 'E' :
-            case 'F' :
-            case 'G' :
-            case 'H' :
-            case 'I' :
-            case 'J' :
-            case 'K' :
-            case 'L' :
-            case 'M' :
-            case 'N' :
-            case 'O' :
-            case 'P' :
-            case 'Q' :
-            case 'R' :
-            case 'S' :
-            case 'T' :
-            case 'U' :
-            case 'V' :
-            case 'W' :
-            case 'X' :
-            case 'Y' :
-            case 'Z' :
+			/* Uppercase letters 'A' .. 'Z': */
+		case 'A' :
+		case 'B' :
+		case 'C' :
+		case 'D' :
+		case 'E' :
+		case 'F' :
+		case 'G' :
+		case 'H' :
+		case 'I' :
+		case 'J' :
+		case 'K' :
+		case 'L' :
+		case 'M' :
+		case 'N' :
+		case 'O' :
+		case 'P' :
+		case 'Q' :
+		case 'R' :
+		case 'S' :
+		case 'T' :
+		case 'U' :
+		case 'V' :
+		case 'W' :
+		case 'X' :
+		case 'Y' :
+		case 'Z' :
 
-            /* Lowercase letters 'a'..'z': */
-            case 'a' :
-            case 'b' :
-            case 'c' :
-            case 'd' :
-            case 'e' :
-            case 'f' :
-            case 'g' :
-            case 'h' :
-            case 'i' :
-            case 'j' :
-            case 'k' :
-            case 'l' :
-            case 'm' :
-            case 'n' :
-            case 'o' :
-            case 'p' :
-            case 'q' :
-            case 'r' :
-            case 's' :
-            case 't' :
-            case 'u' :
-            case 'v' :
-            case 'w' :
-            case 'x' :
-            case 'y' :
-            case 'z' :
+		/* Lowercase letters 'a'..'z': */
+		case 'a' :
+		case 'b' :
+		case 'c' :
+		case 'd' :
+		case 'e' :
+		case 'f' :
+		case 'g' :
+		case 'h' :
+		case 'i' :
+		case 'j' :
+		case 'k' :
+		case 'l' :
+		case 'm' :
+		case 'n' :
+		case 'o' :
+		case 'p' :
+		case 'q' :
+		case 'r' :
+		case 's' :
+		case 't' :
+		case 'u' :
+		case 'v' :
+		case 'w' :
+		case 'x' :
+		case 'y' :
+		case 'z' :
 
-            /* Decimal digits '0'..'9': */
-            case '0' :
-            case '1' :
-            case '2' :
-            case '3' :
-            case '4' :
-            case '5' :
-            case '6' :
-            case '7' :
-            case '8' :
-            case '9' :
+		/* Decimal digits '0'..'9': */
+		case '0' :
+		case '1' :
+		case '2' :
+		case '3' :
+		case '4' :
+		case '5' :
+		case '6' :
+		case '7' :
+		case '8' :
+		case '9' :
 
-            /* Other valid characters: */
-            case ' ' :
-            case '_' :
-            case '+' :
-            case '-' :
-            case '/' :
-            case '.' :
-            case ',' :
-            {
-                if ( bufPos < RECV_BUFFER_LEN )
-                {
-                    /* If the buffer is not full yet, append the character */
-                    //buf[bufCntr][MSG_OFFSET + bufPos] = ch;
-                    cmdbuf[bufPos] = ch;
-                    /* and increase the position index: */
-                    ++bufPos;
-                    vDirectPrintCh(ch);
-                }
+		/* Other valid characters: */
+		case ' ' :
+		case '_' :
+		case '+' :
+		case '-' :
+		case '/' :
+		case '.' :
+		case ',' :
+		{
+			if (bufPos < RECV_BUFFER_LEN) {
+				/* If the buffer is not full yet, append the character */
+				//buf[bufCntr][MSG_OFFSET + bufPos] = ch;
+				cmdbuf[bufPos] = ch;
+				/* and increase the position index: */
+				++bufPos;
+				vDirectPrintCh(ch);
+			}
 
-                break;
-            }
-
-            /* Backspace must be handled separately: */
-            case CODE_BS :
-            {
-                /*
-                 * If the buffer is not empty, decrease the position index,
-                 * i.e. "delete" the last character
-                 */
-                if ( bufPos>0 )
-                {
-                    --bufPos;
-                }
-
-                break;
-            }
-
-            /* 'Enter' a.k.a. Carriage Return (CR): */
-            case CODE_CR :
-            {
-                /* Append characters to terminate the string:*/
-                //bufPos += MSG_OFFSET;
-                //buf[bufCntr][bufPos++] = '"';
-                //buf[bufCntr][bufPos++] = '\r';
-                //buf[bufCntr][bufPos++] = '\n';
-                //buf[bufCntr][bufPos]   = '\0';
-                /* Send the entire string to the print queue */
-                //vPrintMsg(buf[bufCntr]);
-                cmdbuf[bufPos] = 0x0;
-                vDirectPrintMsg("\r\n");
-                ret = parse_cmd2(cmdbuf);
-
-		if (ret != 0) { // Command not found!!
-			show_cmd_help();
+			break;
 		}
-                /* And switch to the next line of the "circular" buffer */
-                //++bufCntr;
-                //bufCntr %= RECV_BUFFER_SIZE;
-                /* "Reset" the position index */
-                bufPos = 0;
 
-                break;
-            }
+		/* Backspace must be handled separately: */
+		case CODE_BS :
+		{
+			/*
+			 * If the buffer is not empty, decrease the position index,
+			 * i.e. "delete" the last character
+			 */
+			if (bufPos > 0) {
+				--bufPos;
+			}
 
-        }  /* switch */
+			break;
+		}
 
-    }  /* for */
+		/* 'Enter' a.k.a. Carriage Return (CR): */
+		case CODE_CR :
+		{
+			/* Append characters to terminate the string:*/
+			//bufPos += MSG_OFFSET;
+			//buf[bufCntr][bufPos++] = '"';
+			//buf[bufCntr][bufPos++] = '\r';
+			//buf[bufCntr][bufPos++] = '\n';
+			//buf[bufCntr][bufPos]   = '\0';
+			/* Send the entire string to the print queue */
+			//vPrintMsg(buf[bufCntr]);
+			cmdbuf[bufPos] = 0x0;
+			vDirectPrintMsg("\r\n");
+			ret = parse_cmd2(cmdbuf);
 
-    /* if it ever breaks out of the infinite loop... */
-    vTaskDelete(NULL);
+			if (ret != 0) { // Command not found!!
+				show_cmd_help();
+			}
+			vPrintf("pCLI > ");
+			/* And switch to the next line of the "circular" buffer */
+			//++bufCntr;
+			//bufCntr %= RECV_BUFFER_SIZE;
+			/* "Reset" the position index */
+			bufPos = 0;
 
-    /* suppress a warning since 'params' is ignored */
-    (void) params;
+			break;
+		}
+
+		}  /* switch */
+
+	}  /* for */
+
+	/* if it ever breaks out of the infinite loop... */
+	vTaskDelete(NULL);
+
+	/* suppress a warning since 'params' is ignored */
+	(void) params;
 }
