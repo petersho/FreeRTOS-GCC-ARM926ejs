@@ -53,19 +53,18 @@ static const UBaseType_t defaultDelay = 1000;
 /* Task function - may be instantiated in multiple tasks */
 void vTaskFunction( void *pvParameters )
 {
-	const portCHAR* taskName;
+	//const portCHAR* taskName;
 	UBaseType_t  delay;
 	paramStruct* params = (paramStruct*) pvParameters;
-	int i = 0;
 
-	taskName = ( NULL==params || NULL==params->text ? defaultText : params->text );
+	//taskName = ( NULL==params || NULL==params->text ? defaultText : params->text );
 	delay = ( NULL==params ? defaultDelay : params->delay);
 
 	for( ; ; ) {
 		/* Print out the name of this task. */
 
 		//vPrintMsg(taskName);
-		vPrintf("%s i = %d\n", taskName, i++);
+		//vPrintf("%s i = %d\n", taskName, i++);
 
 		vTaskDelay( delay / portTICK_RATE_MS );
 	}
@@ -81,12 +80,12 @@ void vTaskFunction( void *pvParameters )
 /* Fixed frequency periodic task function - may be instantiated in multiple tasks */
 void vPeriodicTaskFunction(void* pvParameters)
 {
-	const portCHAR* taskName;
+	//const portCHAR* taskName;
 	UBaseType_t delay;
 	paramStruct* params = (paramStruct*) pvParameters;
 	TickType_t lastWakeTime;
 
-	taskName = ( NULL==params || NULL==params->text ? defaultText : params->text );
+	//taskName = ( NULL==params || NULL==params->text ? defaultText : params->text );
 	delay = ( NULL==params ? defaultDelay : params->delay);
 
 	/*
@@ -183,7 +182,7 @@ void main(void)
 
 	//vDirectPrintMsg("A text may be entered using a keyboard.\r\n");
 	//vDirectPrintMsg("It will be displayed when 'Enter' is pressed.\r\n\r\n");
-
+	system_init();
 	/* Start the FreeRTOS scheduler */
 	vTaskStartScheduler();
 
@@ -191,7 +190,6 @@ void main(void)
 	 * If all goes well, vTaskStartScheduler should never return.
 	 * If it does return, typically not enough heap memory is reserved.
 	 */
-
 	FreeRTOS_Error("Could not start the scheduler!!!\r\n");
 
 	/* just in case if an infinite loop is somehow omitted in FreeRTOS_Error */

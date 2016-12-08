@@ -107,7 +107,8 @@
 
 
 /* Scheduler includes. */
-#include "FreeRTOS.h"
+#include <FreeRTOS.h>
+#include <task.h>
 
 #include "timer.h"
 #include "tick_timer_settings.h"

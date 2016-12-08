@@ -25,6 +25,7 @@ limitations under the License.
 #include <FreeRTOS.h>
 #include <queue.h>
 #include <task.h>
+#include <console.h>
 #include "app_config.h"
 #include "bsp.h"
 #include "uart.h"
@@ -123,7 +124,6 @@ int16_t recvInit(uint8_t uart_nr)
 
 	// Init command list
 	init_cmd_register();
-	add_command_test();
 
 	return pdPASS;
 }

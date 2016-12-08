@@ -99,6 +99,7 @@ char *gets(char *);
 int fputs(const char *__restrict, FILE *__restrict);
 int puts(const char *);
 
+int vPrintf(const char *fmt, ...);
 int printf(const char *__restrict, ...);
 int fprintf(FILE *__restrict, const char *__restrict, ...);
 int sprintf(char *__restrict, const char *__restrict, ...);

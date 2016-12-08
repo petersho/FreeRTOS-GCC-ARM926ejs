@@ -22,7 +22,7 @@
 # See comments in "setenv.sh" for more details about downloading it
 # and setting the appropriate environment variables.
 
-TOOLCHAIN = arm-eabi-
+TOOLCHAIN = arm-none-eabi-
 CC = $(TOOLCHAIN)gcc
 CXX = $(TOOLCHAIN)g++
 AS = $(TOOLCHAIN)as
@@ -33,7 +33,7 @@ AR = $(TOOLCHAIN)ar
 PLATFORM_LIBGCC := -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc
 
 # GCC flags
-CFLAG = -nostdinc -c
+CFLAG = -O0 -nostdinc -c
 OFLAG = -o
 INCLUDEFLAG = -I
 CPUFLAG = -mcpu=arm926ej-s
@@ -70,6 +70,8 @@ CLI_SRC = Cli/
 # Directory with demo specific source (and header) files
 APP_SRC = Demo/
 
+SYSTEM_SRC = System/
+
 LIB_SRC = lib/
 
 # Object files to be linked into an application
@@ -83,10 +85,10 @@ FREERTOS_OBJS = queue.o list.o tasks.o
 #FREERTOS_OBJS += event_groups.o
 
 # Only one memory management .o file must be uncommented!
-FREERTOS_MEMMANG_OBJS = heap_1.o
+#FREERTOS_MEMMANG_OBJS = heap_1.o
 #FREERTOS_MEMMANG_OBJS = heap_2.o
 #FREERTOS_MEMMANG_OBJS = heap_3.o
-#FREERTOS_MEMMANG_OBJS = heap_4.o
+FREERTOS_MEMMANG_OBJS = heap_4.o
 #FREERTOS_MEMMANG_OBJS = heap_5.o
 
 FREERTOS_PORT_OBJS = port.o portISR.o
@@ -109,10 +111,12 @@ LIB_OBJS_MUSL_STDIO = printf.o
 
 LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB) $(LIB_OBJS_MUSL_PTHREAD) $(LIB_OBJS_MUSL_STDIO)
 
-CLI_BOJS = core.o
+CLI_OBJS = core.o
+
+SYSTEM_OBJS = system.o
 
 # All object files specified above are prefixed the intermediate directory
-OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_BOJS) $(TRACE_OBJS) $(APP_OBJS))
+OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_OBJS) $(SYSTEM_OBJS) $(TRACE_OBJS) $(APP_OBJS))
 
 # Definition of the linker script and final targets
 LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
@@ -124,10 +128,12 @@ INC_FREERTOS = $(FREERTOS_SRC)include/
 INC_DRIVERS = $(DRIVERS_SRC)include/
 INC_LIBS_MUSL = $(LIB_SRC)musl/include/
 INC_TRACE = $(FREERTOS_TRACE_SRC)Include/
+INC_CLI = $(CLI_SRC)include/
 
 # Complete include flags to be passed to $(CC) where necessary
 INC_FLAG_MUSL = $(INCLUDEFLAG)$(INC_LIBS_MUSL)
-INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $(INCLUDEFLAG)$(INC_TRACE)
+INC_FLAG_CLI = $(INCLUDEFLAG)$(INC_CLI)
+INC_FLAGS = $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $(INC_FLAG_CLI) $(INCLUDEFLAG)$(INC_TRACE)
 INC_FLAG_DRIVERS = $(INCLUDEFLAG)$(INC_DRIVERS)
 
 # Dependency on HW specific settings
@@ -303,9 +309,14 @@ $(OBJDIR)strtol.o : $(LIB_SRC)musl/src/stdlib/strtol.c
 $(OBJDIR)printf.o : $(LIB_SRC)musl/src/stdio/printf.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
+
+# System function
+$(OBJDIR)system.o : $(SYSTEM_SRC)system.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+
 # Command line interface
 $(OBJDIR)core.o : $(CLI_SRC)core.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 # musl pthread porting
 $(OBJDIR)pthread_create.o : $(LIB_SRC)musl/src/thread/pthread_create.c
