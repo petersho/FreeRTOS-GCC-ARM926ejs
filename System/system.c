@@ -19,6 +19,8 @@
 #include <console.h>
 #include <trcUser.h>
 
+#include <pthread.h>
+
 int cmd_trace_info(int argc, char* argv[])
 {
 	//vPrintMsg("test1 command\n");
@@ -37,9 +39,24 @@ struct cmd_table cmd_trace_tbl[2] = {
 	CMD_TBL_ENTRY(NULL, 0, NULL, NULL)
 };
 
+void lloop()
+{
+	int a = 0;
+
+	while (1) {
+		vPrintf("pthread created teak\n");
+		vTaskDelay(500);
+	}
+}
+
 int cmd_test1(int argc, char* argv[])
 {
-	vPrintf("test1 command\n");
+	pthread_t id;
+	int ret = 0;
+
+	ret = pthread_create(&id,NULL,(void *) lloop, NULL);
+
+	vPrintf("test1 pthread command\n");
 
 	return 0;
 }

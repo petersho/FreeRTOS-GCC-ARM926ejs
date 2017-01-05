@@ -4,13 +4,17 @@
 
 int pthread_create(pthread_t *res, const pthread_attr_t *attrp, void *(*entry)(void *), void *arg)
 {
-	struct pthread *pd = NULL;
+	TaskHandle_t xHandle = NULL;
+	BaseType_t xReturned = 0;
+	int ret = 0;
 
-	xTaskCreate((TaskFunction_t)entry, "pthread", 128, NULL, 10, NULL);
+	xReturned = xTaskCreate((TaskFunction_t)entry, "pthread", 128, NULL, 10, &xHandle);
 
-	
-	*res = (pthread_t)pd;
+	if (xReturned == pdPASS)
+		ret = 0;
 
-	return 0;
+	*res = xHandle;
+
+	return ret;
 }
 
