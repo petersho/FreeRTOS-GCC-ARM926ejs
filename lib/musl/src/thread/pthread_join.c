@@ -11,7 +11,7 @@ int pthread_join(pthread_t t, void **res)
 	xHandle = (TaskHandle_t)t;
 	xSemaphore = xSemaphoreCreateBinary();
 
-	vTaskpThreadJoinSemaSet(xHandle, xSemaphore);
+	vTaskpThreadJoinSemaSet(xHandle, (BaseType_t)xSemaphore);
 
 	if (xSemaphoreTake(xSemaphore, portMAX_DELAY) ) {
 		/* Got Semaphore and then release semaphore */

@@ -1834,7 +1834,7 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 /*-----------------------------------------------------------*/
 
 #if ( INCLUDE_xTaskpThread == 1 )
-	void vTaskpThreadJoinSemaSet(TaskHandle_t xTask, UBaseType_t xSema)
+	void vTaskpThreadJoinSemaSet(TaskHandle_t xTask, BaseType_t xSema)
 	{
 		TCB_t *pxTCB;
 
