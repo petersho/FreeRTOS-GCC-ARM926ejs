@@ -43,12 +43,14 @@ struct cmd_table cmd_trace_tbl[2] = {
 
 void lloop()
 {
-	int a = 0;
+	int i = 0;
 
-	while (1) {
+	for (i = 0 ; i < 5 ; i++) {
 		vPrintf("pthread created teak\n");
 		vTaskDelay(1000);
 	}
+
+	vTaskDelete(NULL);
 }
 
 int cmd_test1(int argc, char* argv[])
@@ -58,9 +60,11 @@ int cmd_test1(int argc, char* argv[])
 
 	ret = pthread_create(&id,NULL,(void *) lloop, NULL);
 
+	pthread_join(id, NULL);
+
 	vPrintf("test1 pthread command\n");
-	vTaskDelay(5000);
-	vTaskDelete((TaskHandle_t)id);
+	//vTaskDelay(5000);
+	//vTaskDelete((TaskHandle_t)id);
 
 	return 0;
 }

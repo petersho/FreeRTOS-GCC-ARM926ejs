@@ -1078,6 +1078,8 @@ void vTaskResume( TaskHandle_t xTaskToResume ) PRIVILEGED_FUNCTION;
  */
 BaseType_t xTaskResumeFromISR( TaskHandle_t xTaskToResume ) PRIVILEGED_FUNCTION;
 
+void vTaskpThreadJoinSemaSet( TaskHandle_t xTask, UBaseType_t xSema ) PRIVILEGED_FUNCTION;
+
 /*-----------------------------------------------------------
  * SCHEDULER CONTROL
  *----------------------------------------------------------*/

@@ -1080,6 +1080,11 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 				mtCOVERAGE_TEST_MARKER();
 			}
 
+#if ( INCLUDE_xTaskpThread == 1)
+			if ( pxTCB->sem != NULL )
+				xSemaphoreGive( pxTCB->sem );
+#endif
+
 			/* Increment the uxTaskNumber also so kernel aware debuggers can
 			detect that the task lists need re-generating.  This is done before
 			portPRE_TASK_DELETE_HOOK() as in the Windows port that macro will
@@ -1826,6 +1831,17 @@ static void prvAddNewTaskToReadyList( TCB_t *pxNewTCB )
 	}
 
 #endif /* ( ( INCLUDE_xTaskResumeFromISR == 1 ) && ( INCLUDE_vTaskSuspend == 1 ) ) */
+/*-----------------------------------------------------------*/
+
+#if ( INCLUDE_xTaskpThread == 1 )
+	void vTaskpThreadJoinSemaSet(TaskHandle_t xTask, UBaseType_t xSema)
+	{
+		TCB_t *pxTCB;
+
+		pxTCB = prvGetTCBFromHandle(xTask);
+		pxTCB->sem = (SemaphoreHandle_t)xSema;
+	}
+#endif /* ( INCLUDE_xTaskpThread == 1 ) */
 /*-----------------------------------------------------------*/
 
 void vTaskStartScheduler( void )
@@ -3397,6 +3413,7 @@ static void prvCheckTasksWaitingTermination( void )
 					--uxCurrentNumberOfTasks;
 					--uxDeletedTasksWaitingCleanUp;
 				}
+
 				taskEXIT_CRITICAL();
 
 				prvDeleteTCB( pxTCB );
