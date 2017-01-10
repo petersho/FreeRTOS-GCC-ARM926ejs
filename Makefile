@@ -105,7 +105,7 @@ LIB_OBJS_MUSL_STRING = memcpy.o memset.o strcpy.o memcmp.o memchr.o strchr.o stp
 		memmem.o bcmp.o memmove.o bcopy.o index.o memccpy.o strtok.o strspn.o strcspn.o strcmp.o strcat.o strncmp.o
 LIB_OBJS_MUSL_STDLIB = abs.o atoi.o atol.o strtol.o
 
-LIB_OBJS_MUSL_PTHREAD = pthread_create.o
+LIB_OBJS_MUSL_PTHREAD = pthread_create.o pthread_join.o
 
 LIB_OBJS_MUSL_STDIO = printf.o
 
@@ -320,6 +320,8 @@ $(OBJDIR)core.o : $(CLI_SRC)core.c
 
 # musl pthread porting
 $(OBJDIR)pthread_create.o : $(LIB_SRC)musl/src/thread/pthread_create.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $(INC_FLAGS) $< $(OFLAG) $@
+$(OBJDIR)pthread_join.o : $(LIB_SRC)musl/src/thread/pthread_join.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INCLUDEFLAG)$(APP_SRC) $(INCLUDEFLAG)$(INC_FREERTOS) $(INCLUDEFLAG)$(FREERTOS_PORT_SRC) $(INC_FLAG_MUSL) $(INC_FLAGS) $< $(OFLAG) $@
 
 

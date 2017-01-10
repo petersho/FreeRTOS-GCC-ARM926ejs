@@ -135,7 +135,7 @@ NVIC value of 255. */
 #define INCLUDE_xTaskGetCurrentTaskHandle		1
 
 /* pthread test */
-#define INCLUDE_xTaskpThread			0
+#define INCLUDE_xTaskpThread				1
 
 #include <trcKernelPort.h>
 
