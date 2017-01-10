@@ -16,6 +16,8 @@
 */
 #include <stdio.h>
 #include <stdlib.h>
+#include <FreeRTOS.h>
+#include <task.h>
 #include <console.h>
 #include <trcUser.h>
 
@@ -45,7 +47,7 @@ void lloop()
 
 	while (1) {
 		vPrintf("pthread created teak\n");
-		vTaskDelay(500);
+		vTaskDelay(1000);
 	}
 }
 
@@ -57,6 +59,8 @@ int cmd_test1(int argc, char* argv[])
 	ret = pthread_create(&id,NULL,(void *) lloop, NULL);
 
 	vPrintf("test1 pthread command\n");
+	vTaskDelay(5000);
+	vTaskDelete((TaskHandle_t)id);
 
 	return 0;
 }

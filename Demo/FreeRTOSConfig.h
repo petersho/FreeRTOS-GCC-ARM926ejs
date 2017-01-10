@@ -134,6 +134,9 @@ NVIC value of 255. */
 #define INCLUDE_xTaskGetSchedulerState			1
 #define INCLUDE_xTaskGetCurrentTaskHandle		1
 
+/* pthread test */
+#define INCLUDE_xTaskpThread			0
+
 #include <trcKernelPort.h>
 
 #endif /* FREERTOS_CONFIG_H */
