@@ -22,7 +22,7 @@
 # See comments in "setenv.sh" for more details about downloading it
 # and setting the appropriate environment variables.
 
-TOOLCHAIN = arm-none-eabi-
+TOOLCHAIN = arm-eabi-
 CC = $(TOOLCHAIN)gcc
 CXX = $(TOOLCHAIN)g++
 AS = $(TOOLCHAIN)as
