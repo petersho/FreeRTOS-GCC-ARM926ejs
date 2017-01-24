@@ -361,6 +361,7 @@ typedef struct tskTaskControlBlock
 		uint8_t ucDelayAborted;
 	#endif
 
+	/* Private implement feature */
 	#if ( INCLUDE_xTaskpThread == 1)
 		SemaphoreHandle_t sem;
 	#endif

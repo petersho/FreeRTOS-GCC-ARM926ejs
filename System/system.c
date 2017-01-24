@@ -68,12 +68,45 @@ int cmd_test1(int argc, char* argv[])
 
 	return 0;
 }
+typedef struct BLOCK_LINK
+{
+	struct BLOCK_LINK *pxNextFreeBlock;	/*<< The next free block in the list. */
+	struct BLOCK_LINK *pxNextAllocBlock;
+	size_t xBlockSize;						/*<< The size of the free block. */
+	TaskHandle_t xOwner;
+} MemBlockLink_t;
+
 int cmd_test2(int argc, char* argv[])
 {
+	char *ptr1;
+	char *ptr2;
+	char *ptr3;
+	MemBlockLink_t *ptr;
+
+
 	vPrintf("test2 command\n");
+	ptr1 = pvPortMalloc(1024);
+	ptr2 = pvPortMalloc(1024 * 2);
+	vPortFree(ptr1);
+	ptr3 = pvPortMalloc(1024 * 4);
+
+	for (ptr = getxStartTaskOwnerPtr() ; ptr->pxNextAllocBlock != NULL ; ptr = ptr->pxNextAllocBlock) {
+		vPrintf("handle = 0x%x\n", ptr->xOwner);
+		if (ptr->xOwner == NULL) {
+			vPrintf("System default\n");
+		} else {
+			vPrintf("name = %s\n", pcTaskGetName(ptr->xOwner));
+		}
+		vPrintf("size = %d\n", (ptr->xBlockSize & (0x7fffffff)) - portBYTE_ALIGNMENT);
+		vPrintf("========\n");
+	}
+	vPrintf("handle = 0x%x\n", ptr->xOwner);
+	vPrintf("name = %s\n", pcTaskGetName(ptr->xOwner));
+	vPrintf("size = %d\n", (ptr->xBlockSize & (0x7fffffff)) - portBYTE_ALIGNMENT);
 
 	return 0;
 }
+
 int cmd_test3(int argc, char* argv[])
 {
 	vPrintf("test3 command\n");

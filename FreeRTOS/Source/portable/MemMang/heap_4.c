@@ -111,7 +111,9 @@ of their memory address. */
 typedef struct A_BLOCK_LINK
 {
 	struct A_BLOCK_LINK *pxNextFreeBlock;	/*<< The next free block in the list. */
+	struct A_BLOCK_LINK *pxNextAllocBlock;
 	size_t xBlockSize;						/*<< The size of the free block. */
+	TaskHandle_t xOwner;
 } BlockLink_t;
 
 /*-----------------------------------------------------------*/
@@ -123,6 +125,8 @@ typedef struct A_BLOCK_LINK
  * adjacent to each other.
  */
 static void prvInsertBlockIntoFreeList( BlockLink_t *pxBlockToInsert );
+static void prvInsertBlockIntoTaskOwnerList( BlockLink_t *pxBlockToInsert );
+static void prvRemovetBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove );
 
 /*
  * Called automatically to setup the required heap structures the first time
@@ -137,7 +141,7 @@ block must by correctly byte aligned. */
 static const size_t xHeapStructSize	= ( sizeof( BlockLink_t ) + ( ( size_t ) ( portBYTE_ALIGNMENT - 1 ) ) ) & ~( ( size_t ) portBYTE_ALIGNMENT_MASK );
 
 /* Create a couple of list links to mark the start and end of the list. */
-static BlockLink_t xStart, *pxEnd = NULL;
+static BlockLink_t xStart, xStartTaskOwner, *pxEnd = NULL;
 
 /* Keeps track of the number of free bytes remaining, but says nothing about
 fragmentation. */
@@ -242,6 +246,7 @@ void *pvReturn = NULL;
 
 						/* Insert the new block into the list of free blocks. */
 						prvInsertBlockIntoFreeList( pxNewBlockLink );
+						prvInsertBlockIntoTaskOwnerList( pxBlock );
 					}
 					else
 					{
@@ -334,6 +339,7 @@ BlockLink_t *pxLink;
 					xFreeBytesRemaining += pxLink->xBlockSize;
 					traceFREE( pv, pxLink->xBlockSize );
 					prvInsertBlockIntoFreeList( ( ( BlockLink_t * ) pxLink ) );
+					prvRemovetBlockIntoTaskOwnerList( ( ( BlockLink_t * ) pxLink ) );
 				}
 				( void ) xTaskResumeAll();
 			}
@@ -415,6 +421,40 @@ size_t xTotalHeapSize = configTOTAL_HEAP_SIZE;
 	xBlockAllocatedBit = ( ( size_t ) 1 ) << ( ( sizeof( size_t ) * heapBITS_PER_BYTE ) - 1 );
 }
 /*-----------------------------------------------------------*/
+void *getxStartTaskOwnerPtr()
+{
+	return (void *)&xStartTaskOwner;
+}
+
+static void prvRemovetBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove )
+{
+	BlockLink_t *pxIterator;
+
+	for( pxIterator = &xStartTaskOwner; pxIterator->pxNextAllocBlock != NULL; pxIterator = pxIterator->pxNextAllocBlock )
+	{
+		/* Nothing to do here, just iterate to the right position. */
+		if ((pxIterator->pxNextAllocBlock == pxBlockToRemove) && (pxIterator->pxNextAllocBlock->xOwner == pxBlockToRemove->xOwner)) {
+			pxIterator->pxNextAllocBlock = pxIterator->pxNextAllocBlock->pxNextAllocBlock;
+			break;
+		}
+	}
+}
+
+static void prvInsertBlockIntoTaskOwnerList( BlockLink_t *pxBlockToInsert )
+{
+	BlockLink_t *pxIterator;
+	TaskHandle_t xHandle;
+
+	for( pxIterator = &xStartTaskOwner; pxIterator->pxNextAllocBlock != NULL; pxIterator = pxIterator->pxNextAllocBlock )
+	{
+		/* Nothing to do here, just iterate to the right position. */
+	}
+
+	xHandle = xTaskGetCurrentTaskHandle();
+	pxBlockToInsert->xOwner = xHandle;
+
+	pxIterator->pxNextAllocBlock = pxBlockToInsert;
+}
 
 static void prvInsertBlockIntoFreeList( BlockLink_t *pxBlockToInsert )
 {

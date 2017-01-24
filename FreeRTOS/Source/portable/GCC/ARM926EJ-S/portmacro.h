@@ -122,7 +122,7 @@ typedef uint32_t UBaseType_t;
 /* Architecture specifics. */
 #define portSTACK_GROWTH            ( -1 )
 #define portTICK_PERIOD_MS          ( ( TickType_t ) 1000 / configTICK_RATE_HZ )
-#define portBYTE_ALIGNMENT          8
+#define portBYTE_ALIGNMENT          32
 #define portNOP()                   __asm volatile ( "NOP" );
 /*-----------------------------------------------------------*/
 

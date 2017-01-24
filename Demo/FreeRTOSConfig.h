@@ -90,7 +90,7 @@
 #define configTICK_RATE_HZ                ( ( TickType_t ) 1000 )
 #define configMAX_PRIORITIES              ( ( UBaseType_t ) 5 )
 #define configMINIMAL_STACK_SIZE          ( ( StackType_t ) 128 )
-#define configTOTAL_HEAP_SIZE             ( ( size_t ) ( 20480 ) )
+#define configTOTAL_HEAP_SIZE             ( ( size_t ) ( 8 * 1024 * 1024 ) )	//8M bytes
 #define configMAX_TASK_NAME_LEN           ( 16 )
 #define configUSE_TRACE_FACILITY          1
 #define configUSE_16_BIT_TICKS            0
