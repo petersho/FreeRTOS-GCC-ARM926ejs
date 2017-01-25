@@ -62,5 +62,5 @@ void _init(void)
 
 	/* Init Trace Recorder */
 	vTraceInitTraceData();
-	uiTraceStart();
+	//uiTraceStart();
 }

@@ -109,7 +109,20 @@ int cmd_test2(int argc, char* argv[])
 
 int cmd_test3(int argc, char* argv[])
 {
+	char *ptr = NULL;
+
+	ptr = pvPortMalloc(1024);
+	if (ptr == NULL)
+		return 0;
+
 	vPrintf("test3 command\n");
+
+	vTaskList(ptr);
+	vPrintf("Task\t\tState\tPri\tStack\tNum\n");
+	vPrintf("--------------------------------------------\n");
+	vPrintf("%s\n", ptr);
+
+	vPortFree(ptr);
 
 	return 0;
 }

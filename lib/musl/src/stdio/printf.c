@@ -9,7 +9,7 @@
 /*
  * For test only.....
  */
-#define CFG_PBSIZE		64
+#define CFG_PBSIZE		256
 
 size_t strnlen (const char *s, size_t count)
 //int strnlen(const char * s, unsigned int count)
@@ -278,6 +278,15 @@ int vsprintf(char *buf, const char *fmt, va_list args)
         return str-buf;
 }
 
+int sprintf(char *s, const char *fmt, ...)
+{
+        int ret;
+        va_list ap;
+        va_start(ap, fmt);
+        ret = vsprintf(s, fmt, ap);
+        va_end(ap);
+        return ret;
+}
 
 //void print_msg(const char *fmt, ...)
 int vPrintf(const char *fmt, ...)
