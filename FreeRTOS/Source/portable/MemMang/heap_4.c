@@ -338,7 +338,7 @@ BlockLink_t *pxLink;
 					/* Add this block to the list of free blocks. */
 					xFreeBytesRemaining += pxLink->xBlockSize;
 					traceFREE( pv, pxLink->xBlockSize );
-					prvRemovetBlockIntoTaskOwnerList( ( ( BlockLink_t * ) pxLink ) );
+					prvRemoveBlockIntoTaskOwnerList( ( ( BlockLink_t * ) pxLink ) );
 					prvInsertBlockIntoFreeList( ( ( BlockLink_t * ) pxLink ) );
 				}
 				( void ) xTaskResumeAll();
@@ -426,7 +426,7 @@ void *getxStartTaskOwnerPtr()
 	return (void *)&xStartTaskOwner;
 }
 
-static void prvRemovetBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove )
+static void prvRemoveBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove )
 {
 	BlockLink_t *pxIterator;
 	TaskHandle_t xHandle;
