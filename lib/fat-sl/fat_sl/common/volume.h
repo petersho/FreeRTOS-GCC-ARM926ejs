@@ -41,7 +41,7 @@
 #ifndef __VOLUME_H
 #define __VOLUME_H
 
-#include "config_fat_sl.h"
+#include "../../api/config_fat_sl.h"
 
 #include "../../version/ver_fat_sl.h"
 #if VER_FAT_SL_MAJOR != 5 || VER_FAT_SL_MINOR != 2

@@ -115,8 +115,10 @@ CLI_OBJS = core.o
 
 SYSTEM_OBJS = system.o
 
+FATSL_OBJS = dir.o drv.o fat.o file.o f_lock.o util.o util_sfn.o volume.o
+
 # All object files specified above are prefixed the intermediate directory
-OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_OBJS) $(SYSTEM_OBJS) $(TRACE_OBJS) $(APP_OBJS))
+OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_OBJS) $(SYSTEM_OBJS) $(FATSL_OBJS) $(TRACE_OBJS) $(APP_OBJS))
 
 # Definition of the linker script and final targets
 LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
@@ -249,7 +251,7 @@ $(OBJDIR)nostdlib.o : $(APP_SRC)nostdlib.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 
-# libs
+# libs/musl
 $(OBJDIR)memcpy.o : $(LIB_SRC)musl/src/string/memcpy.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 $(OBJDIR)strcpy.o : $(LIB_SRC)musl/src/string/strcpy.c
@@ -309,6 +311,31 @@ $(OBJDIR)strtol.o : $(LIB_SRC)musl/src/stdlib/strtol.c
 $(OBJDIR)printf.o : $(LIB_SRC)musl/src/stdio/printf.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
+# libs/fat_sl
+# FATSL_OBJS = dir.o drv.o fat.o file.o f_lock.o util.o util_sfn.o volume.o
+$(OBJDIR)dir.o : $(LIB_SRC)fat-sl/fat_sl/common/dir.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)drv.o : $(LIB_SRC)fat-sl/fat_sl/common/drv.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)fat.o : $(LIB_SRC)fat-sl/fat_sl/common/fat.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)file.o : $(LIB_SRC)fat-sl/fat_sl/common/file.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)f_lock.o : $(LIB_SRC)fat-sl/fat_sl/common/f_lock.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)util.o : $(LIB_SRC)fat-sl/fat_sl/common/util.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)util_sfn.o : $(LIB_SRC)fat-sl/fat_sl/common/util_sfn.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)volume.o : $(LIB_SRC)fat-sl/fat_sl/common/volume.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # System function
 $(OBJDIR)system.o : $(SYSTEM_SRC)system.c

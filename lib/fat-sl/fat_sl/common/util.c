@@ -295,11 +295,27 @@ char _f_toupper ( char ch )
  *    none
  *
  ***************************************************************************/
+static void getcurrenttimedate ( t_psp_timedate * p_timedate )
+{
+  if ( p_timedate != NULL )
+  {
+    p_timedate->sec = 0;
+    p_timedate->min = 0;
+    p_timedate->hour = 12u;
+
+    p_timedate->day = 1u;
+    p_timedate->month = 1u;
+    p_timedate->year = 1980u;
+  }
+} /* psp_getcurrenttimedate */
+
 void f_igettimedate ( unsigned short * time, unsigned short * date )
 {
   t_psp_timedate  s_timedate;
 
-  psp_getcurrenttimedate( &s_timedate );
+  /* FIXME : [Peter Kung] need modified in the future */
+  //psp_getcurrenttimedate( &s_timedate );
+  getcurrenttimedate( &s_timedate );
 
   *time = ( ( (uint16_t)s_timedate.hour << F_CTIME_HOUR_SHIFT ) & F_CTIME_HOUR_MASK )
           | ( ( (uint16_t)s_timedate.min << F_CTIME_MIN_SHIFT )  & F_CTIME_MIN_MASK )
