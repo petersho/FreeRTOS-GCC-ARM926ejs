@@ -139,7 +139,7 @@ int cmd_test4(int argc, char* argv[])
 	"test4		- test4 test command"	\
 ),
 
-struct cmd_table cmd_new_tbl[4] = {
+struct cmd_table cmd_new_tbl[5] = {
 	CMD_TBL_TEST1
 	CMD_TBL_TEST2
 	CMD_TBL_TEST3
