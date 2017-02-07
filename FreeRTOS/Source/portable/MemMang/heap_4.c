@@ -126,7 +126,7 @@ typedef struct A_BLOCK_LINK
  */
 static void prvInsertBlockIntoFreeList( BlockLink_t *pxBlockToInsert );
 static void prvInsertBlockIntoTaskOwnerList( BlockLink_t *pxBlockToInsert );
-static void prvRemovetBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove );
+static void prvRemoveBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove );
 
 /*
  * Called automatically to setup the required heap structures the first time
