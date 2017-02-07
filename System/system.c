@@ -86,8 +86,8 @@ int cmd_test2(int argc, char* argv[])
 
 	vPrintf("test2 command\n");
 	ptr1 = pvPortMalloc(1024);
-	ptr2 = pvPortMalloc(1024 * 2);
 	vPortFree(ptr1);
+	ptr2 = pvPortMalloc(1024 * 2);
 	ptr3 = pvPortMalloc(1024 * 4);
 
 	for (ptr = getxStartTaskOwnerPtr() ; ptr->pxNextAllocBlock != NULL ; ptr = ptr->pxNextAllocBlock) {
@@ -110,6 +110,7 @@ int cmd_test2(int argc, char* argv[])
 int cmd_test3(int argc, char* argv[])
 {
 	char *ptr = NULL;
+	int i = 0;
 
 	ptr = pvPortMalloc(1024);
 	if (ptr == NULL)
@@ -118,11 +119,22 @@ int cmd_test3(int argc, char* argv[])
 	vPrintf("test3 command\n");
 
 	vTaskList(ptr);
-	vPrintf("Task\t\tState\tPri\tStack\tNum\n");
-	vPrintf("--------------------------------------------\n");
-	vPrintf("%s\n", ptr);
+	vPrintf("Task\t\tState\tPri\tStack\tHeap\tNum\n");
+	vPrintf("----------------------------------------------------\n");
+
+	for (i = 0 ; i < 1024 ; i++) {
+		if (*(ptr + i) != 0) {
+			vPrintf("%c", *(ptr + i));
+		}
+	}
 
 	vPortFree(ptr);
+
+	return 0;
+}
+
+int cmd_test4(int argc, char* argv[])
+{
 
 	return 0;
 }
@@ -139,11 +151,16 @@ int cmd_test3(int argc, char* argv[])
 	"test3",	5,	cmd_test3,	\
 	"test3		- test3 test command"	\
 ),
+#define CMD_TBL_TEST4	CMD_TBL_ENTRY(		\
+	"test4",	5,	cmd_test4,	\
+	"test4		- test4 test command"	\
+),
 
 struct cmd_table cmd_new_tbl[4] = {
 	CMD_TBL_TEST1
 	CMD_TBL_TEST2
 	CMD_TBL_TEST3
+	CMD_TBL_TEST4
 	CMD_TBL_ENTRY(NULL, 0, NULL, NULL)
 };
 

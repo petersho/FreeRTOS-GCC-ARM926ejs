@@ -175,6 +175,7 @@ typedef struct xTASK_STATUS
 	uint32_t ulRunTimeCounter;		/* The total run time allocated to the task so far, as defined by the run time stats clock.  See http://www.freertos.org/rtos-run-time-stats.html.  Only valid when configGENERATE_RUN_TIME_STATS is defined as 1 in FreeRTOSConfig.h. */
 	StackType_t *pxStackBase;		/* Points to the lowest address of the task's stack area. */
 	uint16_t usStackHighWaterMark;	/* The minimum amount of stack space that has remained for the task since the task was created.  The closer this value is to zero the closer the task has come to overflowing its stack. */
+	uint32_t ulHeapUsage;
 } TaskStatus_t;
 
 /* Possible return values for eTaskConfirmSleepModeStatus(). */
@@ -2065,6 +2066,9 @@ uint32_t ulTaskNotifyTake( BaseType_t xClearCountOnExit, TickType_t xTicksToWait
  * \ingroup TaskNotifications
  */
 BaseType_t xTaskNotifyStateClear( TaskHandle_t xTask );
+
+void xTaskHeapUsageAdd( TaskHandle_t xTask, uint32_t size );
+void xTaskHeapUsageSub( TaskHandle_t xTask, uint32_t size );
 
 /*-----------------------------------------------------------
  * SCHEDULER INTERNALS AVAILABLE FOR PORTING PURPOSES

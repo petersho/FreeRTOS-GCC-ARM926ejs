@@ -362,10 +362,13 @@ typedef struct tskTaskControlBlock
 	#endif
 
 	/* Private implement feature */
-	#if ( INCLUDE_xTaskpThread == 1)
+	#if ( INCLUDE_xTaskpThread == 1 )
 		SemaphoreHandle_t sem;
 	#endif
 
+	#if ( INCLUDE_xTaskHeapUsage == 1 )
+		uint32_t ulHeapUsage;
+	#endif
 } tskTCB;
 
 /* The old tskTCB name is maintained above then typedefed to the new TCB_t name
@@ -923,6 +926,11 @@ UBaseType_t x;
 	{
 		pxNewTCB->ulNotifiedValue = 0;
 		pxNewTCB->ucNotifyState = taskNOT_WAITING_NOTIFICATION;
+	}
+	#endif
+	#if ( INCLUDE_xTaskHeapUsage == 1 )
+	{
+		pxNewTCB->ulHeapUsage = 0;
 	}
 	#endif
 
@@ -3443,6 +3451,7 @@ static void prvCheckTasksWaitingTermination( void )
 		pxTaskStatus->uxCurrentPriority = pxTCB->uxPriority;
 		pxTaskStatus->pxStackBase = pxTCB->pxStack;
 		pxTaskStatus->xTaskNumber = pxTCB->uxTCBNumber;
+		pxTaskStatus->ulHeapUsage = pxTCB->ulHeapUsage;
 
 		#if ( INCLUDE_vTaskSuspend == 1 )
 		{
@@ -4038,7 +4047,7 @@ TCB_t *pxTCB;
 				pcWriteBuffer = prvWriteNameToBuffer( pcWriteBuffer, pxTaskStatusArray[ x ].pcTaskName );
 
 				/* Write the rest of the string. */
-				sprintf( pcWriteBuffer, "\t%c\t%u\t%u\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber );
+				sprintf( pcWriteBuffer, "\t%c\t%u\t%u\t%u\t%u\r\n", cStatus, ( unsigned int ) pxTaskStatusArray[ x ].uxCurrentPriority, ( unsigned int ) pxTaskStatusArray[ x ].usStackHighWaterMark, ( unsigned int ) pxTaskStatusArray[ x ].ulHeapUsage, ( unsigned int ) pxTaskStatusArray[ x ].xTaskNumber );
 				pcWriteBuffer += strlen( pcWriteBuffer );
 			}
 
@@ -4711,6 +4720,39 @@ TickType_t uxReturn;
 #endif /* configUSE_TASK_NOTIFICATIONS */
 /*-----------------------------------------------------------*/
 
+#if( INCLUDE_xTaskHeapUsage == 1 )
+
+	void xTaskHeapUsageAdd( TaskHandle_t xTask, uint32_t size )
+	{
+	TCB_t *pxTCB;
+
+		pxTCB = prvGetTCBFromHandle( xTask );
+
+		if (pxTCB != NULL) {
+
+			taskENTER_CRITICAL();
+			{
+				pxTCB->ulHeapUsage += size;
+			}
+			taskEXIT_CRITICAL();
+		}
+	}
+
+	void xTaskHeapUsageSub( TaskHandle_t xTask, uint32_t size )
+	{
+	TCB_t *pxTCB;
+
+		pxTCB = prvGetTCBFromHandle( xTask );
+
+		taskENTER_CRITICAL();
+		{
+			pxTCB->ulHeapUsage -= size;
+		}
+		taskEXIT_CRITICAL();
+	}
+
+#endif /* INCLUDE_xTaskHeapUsage */
+/*-----------------------------------------------------------*/
 
 static void prvAddCurrentTaskToDelayedList( TickType_t xTicksToWait, const BaseType_t xCanBlockIndefinitely )
 {

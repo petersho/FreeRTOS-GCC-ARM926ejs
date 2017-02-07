@@ -338,8 +338,8 @@ BlockLink_t *pxLink;
 					/* Add this block to the list of free blocks. */
 					xFreeBytesRemaining += pxLink->xBlockSize;
 					traceFREE( pv, pxLink->xBlockSize );
-					prvInsertBlockIntoFreeList( ( ( BlockLink_t * ) pxLink ) );
 					prvRemovetBlockIntoTaskOwnerList( ( ( BlockLink_t * ) pxLink ) );
+					prvInsertBlockIntoFreeList( ( ( BlockLink_t * ) pxLink ) );
 				}
 				( void ) xTaskResumeAll();
 			}
@@ -429,12 +429,17 @@ void *getxStartTaskOwnerPtr()
 static void prvRemovetBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove )
 {
 	BlockLink_t *pxIterator;
+	TaskHandle_t xHandle;
 
 	for( pxIterator = &xStartTaskOwner; pxIterator->pxNextAllocBlock != NULL; pxIterator = pxIterator->pxNextAllocBlock )
 	{
 		/* Nothing to do here, just iterate to the right position. */
 		if ((pxIterator->pxNextAllocBlock == pxBlockToRemove) && (pxIterator->pxNextAllocBlock->xOwner == pxBlockToRemove->xOwner)) {
 			pxIterator->pxNextAllocBlock = pxIterator->pxNextAllocBlock->pxNextAllocBlock;
+			xHandle = pxBlockToRemove->xOwner;
+
+			xTaskHeapUsageSub(xHandle, pxBlockToRemove->xBlockSize);
+
 			break;
 		}
 	}
@@ -451,6 +456,8 @@ static void prvInsertBlockIntoTaskOwnerList( BlockLink_t *pxBlockToInsert )
 	}
 
 	xHandle = xTaskGetCurrentTaskHandle();
+	xTaskHeapUsageAdd(xHandle, pxBlockToInsert->xBlockSize);
+
 	pxBlockToInsert->xOwner = xHandle;
 
 	pxIterator->pxNextAllocBlock = pxBlockToInsert;
