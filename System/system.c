@@ -23,6 +23,8 @@
 
 #include <pthread.h>
 
+#define SYS_INFO_BUF_SIZE	1024
+
 int cmd_trace_info(int argc, char* argv[])
 {
 	//vPrintMsg("test1 command\n");
@@ -109,26 +111,7 @@ int cmd_test2(int argc, char* argv[])
 
 int cmd_test3(int argc, char* argv[])
 {
-	char *ptr = NULL;
-	int i = 0;
-
-	ptr = pvPortMalloc(1024);
-	if (ptr == NULL)
-		return 0;
-
 	vPrintf("test3 command\n");
-
-	vTaskList(ptr);
-	vPrintf("Task\t\tState\tPri\tStack\tHeap\tNum\n");
-	vPrintf("----------------------------------------------------\n");
-
-	for (i = 0 ; i < 1024 ; i++) {
-		if (*(ptr + i) != 0) {
-			vPrintf("%c", *(ptr + i));
-		}
-	}
-
-	vPortFree(ptr);
 
 	return 0;
 }
@@ -180,7 +163,26 @@ int cmd_sys_free(int argc, char* argv[])
 
 int cmd_sys_info(int argc, char* argv[])
 {
-	vPrintf("sysinfo command\n");
+	char *ptr = NULL;
+	int i = 0;
+
+	ptr = pvPortMalloc(SYS_INFO_BUF_SIZE);
+	if (ptr == NULL)
+		return 0;
+
+	vTaskList(ptr);
+	vPrintf("Task\t\tState\tPri\tStack\tHeap\tNum\n");
+	vPrintf("----------------------------------------------------\n");
+
+	for (i = 0 ; i < SYS_INFO_BUF_SIZE ; i++) {
+		if (*(ptr + i) != 0) {
+			vPrintf("%c", *(ptr + i));
+		}
+	}
+
+	vPortFree(ptr);
+
+	return 0;
 
 	return 0;
 }
