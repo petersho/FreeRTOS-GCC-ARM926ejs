@@ -183,6 +183,10 @@ void main(void)
 	//vDirectPrintMsg("A text may be entered using a keyboard.\r\n");
 	//vDirectPrintMsg("It will be displayed when 'Enter' is pressed.\r\n\r\n");
 	system_init();
+
+	// FAT-SL init
+	//ram_initfunc();
+
 	/* Start the FreeRTOS scheduler */
 	vTaskStartScheduler();
 
