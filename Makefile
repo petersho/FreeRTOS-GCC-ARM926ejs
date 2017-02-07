@@ -115,7 +115,7 @@ CLI_OBJS = core.o
 
 SYSTEM_OBJS = system.o
 
-FATSL_OBJS = dir.o drv.o fat.o file.o f_lock.o util.o util_sfn.o volume.o
+FATSL_OBJS = dir.o drv.o fat.o file.o f_lock.o util.o util_sfn.o volume.o ramdrv_f.o
 
 # All object files specified above are prefixed the intermediate directory
 OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_OBJS) $(SYSTEM_OBJS) $(FATSL_OBJS) $(TRACE_OBJS) $(APP_OBJS))
@@ -335,6 +335,9 @@ $(OBJDIR)util_sfn.o : $(LIB_SRC)fat-sl/fat_sl/common/util_sfn.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 $(OBJDIR)volume.o : $(LIB_SRC)fat-sl/fat_sl/common/volume.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+$(OBJDIR)ramdrv_f.o : $(LIB_SRC)fat-sl/media-drv/ram/ramdrv_f.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 # System function

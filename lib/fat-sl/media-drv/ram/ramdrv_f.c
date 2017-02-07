@@ -39,7 +39,7 @@
  */
 
 #include "../../api/api_mdriver_ram.h"
-#include "config_mdriver_ram.h"
+#include "../../api/config_mdriver_ram.h"
 #include "../../psp/include/psp_string.h"
 
 #include "../../version/ver_mdriver_ram.h"
