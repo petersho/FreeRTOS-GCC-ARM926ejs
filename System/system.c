@@ -185,8 +185,6 @@ int cmd_sys_info(int argc, char* argv[])
 	vPortFree(ptr);
 
 	return 0;
-
-	return 0;
 }
 
 int cmd_sys_ps(int argc, char* argv[])
