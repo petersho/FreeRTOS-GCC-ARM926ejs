@@ -12,7 +12,7 @@ int pthread_create(pthread_t *res, const pthread_attr_t *attrp, void *(*entry)(v
 
 	priority = uxTaskPriorityGet(NULL);
 
-	xReturned = xTaskCreate((TaskFunction_t)entry, "pthread", 128, NULL, priority, &xHandle);
+	xReturned = xTaskCreate((TaskFunction_t)entry, "pthread", 512, NULL, priority, &xHandle);
 
 	if (xReturned == pdPASS)
 		ret = 0;

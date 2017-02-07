@@ -170,6 +170,8 @@ int cmd_sys_info(int argc, char* argv[])
 	if (ptr == NULL)
 		return 0;
 
+	memset(ptr, 0, SYS_INFO_BUF_SIZE);
+
 	vTaskList(ptr);
 	vPrintf("Task\t\tState\tPri\tStack\tHeap\tNum\n");
 	vPrintf("----------------------------------------------------\n");

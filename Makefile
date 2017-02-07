@@ -33,7 +33,7 @@ AR = $(TOOLCHAIN)ar
 PLATFORM_LIBGCC := -L $(shell dirname `$(CC) $(CFLAGS) -print-libgcc-file-name`) -lgcc
 
 # GCC flags
-CFLAG = -O2 -nostdinc -c
+CFLAG = -O0 -nostdinc -c
 OFLAG = -o
 INCLUDEFLAG = -I
 CPUFLAG = -mcpu=arm926ej-s
