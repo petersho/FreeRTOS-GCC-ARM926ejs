@@ -111,6 +111,9 @@ int cmd_test2(int argc, char* argv[])
 
 int cmd_test3(int argc, char* argv[])
 {
+	pthread_mutex_t lock;
+
+	//xSemaphoreCreateMutex();
 	vPrintf("test3 command\n");
 
 	return 0;
