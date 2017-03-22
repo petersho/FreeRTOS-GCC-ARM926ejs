@@ -88,7 +88,7 @@
 /* Timers' clock frequency is 1 MHz: */
 #define configCPU_CLOCK_HZ                ( ( UBaseType_t) 1000000 )
 #define configTICK_RATE_HZ                ( ( TickType_t ) 1000 )
-#define configMAX_PRIORITIES              ( ( UBaseType_t ) 5 )
+#define configMAX_PRIORITIES              ( ( UBaseType_t ) 16 )
 #define configMINIMAL_STACK_SIZE          ( ( StackType_t ) 128 )
 #define configTOTAL_HEAP_SIZE             ( ( size_t ) ( 8 * 1024 * 1024 ) )	//8M bytes
 #define configMAX_TASK_NAME_LEN           ( 16 )
