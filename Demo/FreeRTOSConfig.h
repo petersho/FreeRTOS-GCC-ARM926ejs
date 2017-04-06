@@ -139,6 +139,9 @@ NVIC value of 255. */
 /* pthread test */
 #define INCLUDE_xTaskpThread				1
 
+/* Multi priority queue v2 */
+#define INCLUDE_MultiPriorityQueue			1
+
 #include <trcKernelPort.h>
 
 #endif /* FREERTOS_CONFIG_H */

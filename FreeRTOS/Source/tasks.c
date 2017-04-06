@@ -83,6 +83,15 @@ task.h is included from an application file. */
 #include "StackMacros.h"
 #include "semphr.h"
 
+#if ( INCLUDE_MultiPriorityQueue == 1 )
+	#define PRIORITY_SETS	4
+	static unsigned int priority_dbg_array[configMAX_PRIORITIES * PRIORITY_SETS] = {0};
+#else
+	#define PRIORITY_SETS	1
+#endif
+
+static unsigned int priority_offset = 0;
+
 /* Lint e961 and e750 are suppressed as a MISRA exception justified because the
 MPU ports require MPU_WRAPPERS_INCLUDED_FROM_API_FILE to be defined for the
 header files above, but not in this file, in order to generate the correct
@@ -162,6 +171,13 @@ a statically allocated stack and a dynamically allocated TCB. */
 
 	/* uxTopReadyPriority holds the priority of the highest priority ready
 	state task. */
+#if ( INCLUDE_MultiPriorityQueue == 1)
+	#define taskRECORD_READY_PRIORITY( uxPriority )						\
+	{											\
+		uxTopReadyPriority = (configMAX_PRIORITIES * PRIORITY_SETS) - 1;		\
+												\
+	} /* taskRECORD_READY_PRIORITY */
+#else
 	#define taskRECORD_READY_PRIORITY( uxPriority )														\
 	{																									\
 		if( ( uxPriority ) > uxTopReadyPriority )														\
@@ -169,7 +185,7 @@ a statically allocated stack and a dynamically allocated TCB. */
 			uxTopReadyPriority = ( uxPriority );														\
 		}																								\
 	} /* taskRECORD_READY_PRIORITY */
-
+#endif
 	/*-----------------------------------------------------------*/
 
 	#define taskSELECT_HIGHEST_PRIORITY_TASK()															\
@@ -257,10 +273,13 @@ count overflows. */
  * Place the task represented by pxTCB into the appropriate ready list for
  * the task.  It is inserted at the end of the list.
  */
-#define prvAddTaskToReadyList( pxTCB )																\
-	traceMOVED_TASK_TO_READY_STATE( pxTCB );														\
-	taskRECORD_READY_PRIORITY( ( pxTCB )->uxPriority );												\
-	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority ] ), &( ( pxTCB )->xStateListItem ) ); \
+#define prvAddTaskToReadyList( pxTCB )													\
+	traceMOVED_TASK_TO_READY_STATE( pxTCB );											\
+	taskRECORD_READY_PRIORITY( ( pxTCB )->uxPriority );										\
+	if (( pxTCB )->uxPriority == 0) priority_offset = 0;	\
+	priority_dbg_array[( pxTCB )->uxPriority + ((priority_offset % PRIORITY_SETS) * configMAX_PRIORITIES)]++;							\
+	vListInsertEnd( &( pxReadyTasksLists[ ( pxTCB )->uxPriority + ((priority_offset % PRIORITY_SETS) * configMAX_PRIORITIES)] ), &( ( pxTCB )->xStateListItem ) ); \
+	priority_offset++;				\
 	tracePOST_MOVED_TASK_TO_READY_STATE( pxTCB )
 /*-----------------------------------------------------------*/
 
@@ -380,8 +399,8 @@ static variables must be declared volatile. */
 
 PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
 
-/* Lists for ready and blocked tasks. --------------------*/
-PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ];/*< Prioritised ready tasks. */
+	/* Lists for ready and blocked tasks. --------------------*/
+PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES * PRIORITY_SETS ];/*< Prioritised ready tasks. */
 PRIVILEGED_DATA static List_t xDelayedTaskList1;						/*< Delayed tasks. */
 PRIVILEGED_DATA static List_t xDelayedTaskList2;						/*< Delayed tasks (two lists are used - one for delays that have overflowed the current tick count. */
 PRIVILEGED_DATA static List_t * volatile pxDelayedTaskList;				/*< Points to the delayed task list currently being used. */
@@ -3364,7 +3383,7 @@ static void prvInitialiseTaskLists( void )
 {
 UBaseType_t uxPriority;
 
-	for( uxPriority = ( UBaseType_t ) 0U; uxPriority < ( UBaseType_t ) configMAX_PRIORITIES; uxPriority++ )
+	for( uxPriority = ( UBaseType_t ) 0U; uxPriority < ( UBaseType_t ) configMAX_PRIORITIES * PRIORITY_SETS ; uxPriority++ )
 	{
 		vListInitialise( &( pxReadyTasksLists[ uxPriority ] ) );
 	}
