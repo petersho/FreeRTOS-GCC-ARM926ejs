@@ -24,32 +24,41 @@
 
 int cmd_testcode_test_memcpy(int argc, char* argv[])
 {
-	char src[32], dst[32];
-	int i = 0;
+	int size_array[4] = {32, 64, 127, 1024};
+	char *src, *dst;
+	//char src[32], dst[32];
+	int i = 0, j = 0;
 	int error = 0;
 
 	vPrintf("test code : memcpy : START\n");
+	for (i = 0 ; i < (sizeof(size_array) / sizeof(int)) ; i++) {
+		src = pvPortMalloc(size_array[i]);
+		dst = pvPortMalloc(size_array[i]);
 
-	/* Init src and dst data */
-	for (i = 0 ; i < 32 ; i++) {
-		src[i] = i + 1;
-		dst[i] = 0;
-	}
-
-	memcpy(dst, src, sizeof(dst));
-
-	/* Checking dst data */
-	for (i = 0 ; i < 32 ; i++) {
-		if (dst[i] != src[i]) {
-			vPrintf("data mismatch\n");
-			error++;
+		/* Init src and dst data */
+		for (j = 0 ; j < size_array[i] ; j++) {
+			src[j] = (j + 1) & 0xFF;
+			dst[j] = 0;
 		}
-	}
 
-	if (error == 0) {
-		vPrintf("test code : memcpy : PASS\n");
-	}
+		memcpy(dst, src, size_array[i]);
 
+		/* Checking dst data */
+		for (j = 0 ; j < size_array[i] ; j++) {
+			if (dst[j] != src[j]) {
+				vPrintf("data mismatch\n");
+					error++;
+			}
+		}
+
+		vPortFree(src);
+		vPortFree(dst);
+
+		if (error == 0) {
+			vPrintf("test code : memcpy : PASS : %d bytes\n", size_array[i]);
+		}
+		error = 0;
+	}
 	return 0;
 }
 
