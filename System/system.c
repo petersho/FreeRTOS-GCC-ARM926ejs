@@ -230,4 +230,6 @@ void system_init()
 	cmd_register(cmd_trace_tbl);
 	cmd_register(cmd_system_tbl);
 	cmd_register(cmd_new_tbl);
+
+	testcode_init();
 }

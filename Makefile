@@ -113,7 +113,7 @@ LIB_OBJS := $(LIB_OBJS_MUSL_STRING) $(LIB_OBJS_MUSL_STDLIB) $(LIB_OBJS_MUSL_PTHR
 
 CLI_OBJS = core.o
 
-SYSTEM_OBJS = system.o
+SYSTEM_OBJS = system.o testcode.o
 
 FATSL_OBJS = dir.o drv.o fat.o file.o f_lock.o util.o util_sfn.o volume.o ramdrv_f.o
 
@@ -342,6 +342,8 @@ $(OBJDIR)ramdrv_f.o : $(LIB_SRC)fat-sl/media-drv/ram/ramdrv_f.c
 
 # System function
 $(OBJDIR)system.o : $(SYSTEM_SRC)system.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
+$(OBJDIR)testcode.o : $(SYSTEM_SRC)testcode.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 # Command line interface
