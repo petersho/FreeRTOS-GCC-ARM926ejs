@@ -2369,7 +2369,7 @@ TCB_t *pxTCB;
 
 	UBaseType_t uxTaskGetSystemState( TaskStatus_t * const pxTaskStatusArray, const UBaseType_t uxArraySize, uint32_t * const pulTotalRunTime )
 	{
-	UBaseType_t uxTask = 0, uxQueue = configMAX_PRIORITIES;
+	UBaseType_t uxTask = 0, uxQueue = configMAX_PRIORITIES * PRIORITY_SETS;
 
 		vTaskSuspendAll();
 		{
