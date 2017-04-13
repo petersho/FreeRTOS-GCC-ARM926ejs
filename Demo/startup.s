@@ -168,4 +168,8 @@ __bss_begin_addr:
 __bss_end_addr:
 	.word __bss_end
 
+.globl get_cpsr
+get_cpsr:
+	mrs r0,cpsr
+	bx lr
 .end

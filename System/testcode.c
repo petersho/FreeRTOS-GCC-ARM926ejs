@@ -64,7 +64,11 @@ int cmd_testcode_test_memcpy(int argc, char* argv[])
 
 int cmd_testcode_test_memcmp(int argc, char* argv[])
 {
+	unsigned int aaa = 0;
+
 	vPrintf("cmd_testcode_test_memcmp command\n");
+
+	aaa = IsSystemMode();
 
 	return 0;
 }

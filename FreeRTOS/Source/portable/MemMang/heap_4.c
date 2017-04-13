@@ -428,6 +428,13 @@ void *getxStartTaskOwnerPtr()
 
 static void prvRemoveBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove )
 {
+	TaskHandle_t xHandle;
+
+	if (pxBlockToRemove->xOwner) {
+		xHandle = pxBlockToRemove->xOwner;
+		xTaskHeapUsageSub(xHandle, pxBlockToRemove->xBlockSize);
+	}
+#if 0
 	BlockLink_t *pxIterator;
 	TaskHandle_t xHandle;
 
@@ -443,10 +450,21 @@ static void prvRemoveBlockIntoTaskOwnerList( BlockLink_t *pxBlockToRemove )
 			break;
 		}
 	}
+#endif
 }
 
 static void prvInsertBlockIntoTaskOwnerList( BlockLink_t *pxBlockToInsert )
 {
+	TaskHandle_t xHandle;
+
+	if (IsSystemMode()) {
+		xHandle = xTaskGetCurrentTaskHandle();
+		pxBlockToInsert->xOwner = xHandle;
+		xTaskHeapUsageAdd(xHandle, pxBlockToInsert->xBlockSize);
+	} else {
+		pxBlockToInsert->xOwner = NULL;
+	}
+#if 0
 	BlockLink_t *pxIterator;
 	TaskHandle_t xHandle;
 
@@ -461,6 +479,7 @@ static void prvInsertBlockIntoTaskOwnerList( BlockLink_t *pxBlockToInsert )
 	pxBlockToInsert->xOwner = xHandle;
 
 	pxIterator->pxNextAllocBlock = pxBlockToInsert;
+#endif
 }
 
 static void prvInsertBlockIntoFreeList( BlockLink_t *pxBlockToInsert )

@@ -25,6 +25,18 @@
 
 #define SYS_INFO_BUF_SIZE	1024
 
+int IsSystemMode()
+{
+	unsigned int cpsr = 0;
+
+	cpsr = get_cpsr();
+
+	if ((cpsr & 0x1F) == 31)
+		return 1;
+	else
+		return 0;
+}
+
 int cmd_trace_info(int argc, char* argv[])
 {
 	//vPrintMsg("test1 command\n");
@@ -111,9 +123,9 @@ int cmd_test2(int argc, char* argv[])
 
 int cmd_test3(int argc, char* argv[])
 {
-	pthread_mutex_t lock;
+	char *ptr;
 
-	//xSemaphoreCreateMutex();
+	ptr = pvPortMalloc(1024);
 	vPrintf("test3 command\n");
 
 	return 0;
@@ -121,6 +133,8 @@ int cmd_test3(int argc, char* argv[])
 
 int cmd_test4(int argc, char* argv[])
 {
+
+	vPrintf("Task = %d\n", uxTaskGetNumberOfTasks());
 
 	return 0;
 }
