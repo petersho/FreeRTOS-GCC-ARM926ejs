@@ -150,6 +150,7 @@ typedef struct _isrVectRecord
     int8_t irq;                   /* IRQ handled by this record */
     pVectoredIsrPrototype isr;    /* address of the ISR */
     int8_t priority;              /* priority of this IRQ */
+    uint32_t counter;		  /* IRQ event counter */
 } isrVectRecord;
 
 static isrVectRecord __irqVect[NR_INTERRUPTS];
@@ -262,7 +263,10 @@ static void __defaultVectorIsr(void)
  */
 void _pic_IrqHandler(void)
 {
-
+    int i = 0;
+    int test = 0;
+    uint32_t irqbit = 0;
+    uint32_t irq = 0;
     /*
      * Vectored implementation, a.k.a. "Vectored interrupt flow sequence", described
      * on page 2-9 of DDI0181.
@@ -276,6 +280,17 @@ void _pic_IrqHandler(void)
      * is being serviced.
      */
     isrAddr = (pVectoredIsrPrototype) pPicReg->VICVECTADDR;
+
+    irqbit = pPicReg->VICIRQSTATUS;
+    for (i = 0 ; i < 16 ; i++) {
+	    if (irqbit & 0x0001) {
+		    irq = i;
+		    break;
+	    }
+	    irqbit = irqbit >> 1;
+    }
+
+    __irqVect[irq].counter++;
 
     /* Execute the routine at the vector address */
     (*isrAddr)();
@@ -319,6 +334,7 @@ void pic_init(void)
         __irqVect[i].irq = -1;                 /* no IRQ assigned */
         __irqVect[i].isr = &__irq_dummyISR;    /* dummy ISR routine */
         __irqVect[i].priority = -1;            /* lowest priority */
+        __irqVect[i].counter = 0;	       /* Reset irq counter */
 
         if ( i<NR_VECTORS )
         {
