@@ -309,7 +309,7 @@ $(OBJDIR)strtol.o : $(LIB_SRC)musl/src/stdlib/strtol.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
 
 $(OBJDIR)printf.o : $(LIB_SRC)musl/src/stdio/printf.c
-	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAG_MUSL) $(INC_FLAG_DRIVERS) $< $(OFLAG) $@
 
 # libs/fat_sl
 # FATSL_OBJS = dir.o drv.o fat.o file.o f_lock.o util.o util_sfn.o volume.o
