@@ -23,6 +23,8 @@ typedef unsigned _Addr uintptr_t;
 
 typedef unsigned long pthread_t;
 typedef struct { union { int __i[9]; volatile int __vi[9]; unsigned __s[9]; } __u; } pthread_attr_t;
-typedef struct { union { int __i[6]; volatile int __vi[6]; volatile void *volatile __p[6]; } __u; } pthread_mutex_t;
+//typedef struct { union { int __i[6]; volatile int __vi[6]; volatile void *volatile __p[6]; } __u; } pthread_mutex_t;
+typedef struct { unsigned __attr; } pthread_mutexattr_t;
+typedef void * pthread_mutex_t;
 
 #endif

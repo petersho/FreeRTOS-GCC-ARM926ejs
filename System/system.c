@@ -22,6 +22,7 @@
 #include <trcUser.h>
 
 #include <pthread.h>
+#include <semphr.h>
 
 #define SYS_INFO_BUF_SIZE	1024
 
@@ -131,10 +132,60 @@ int cmd_test3(int argc, char* argv[])
 	return 0;
 }
 
-int cmd_test4(int argc, char* argv[])
+
+
+
+pthread_mutex_t mutex;
+int total = 0;
+
+void count01()
 {
 
+
+	while (1) {
+		pthread_mutex_lock(&mutex);
+		//xSemaphoreTake( mutex, portMAX_DELAY );
+		total++;
+		vPrintf("count01 Total = %d\n", total);
+		pthread_mutex_unlock(&mutex);
+		//xSemaphoreGive(mutex);
+		vTaskDelay(10);
+	}
+
+	vTaskDelete(NULL);
+}
+
+
+void count02()
+{
+	while (1) {
+		pthread_mutex_lock(&mutex);
+		//xSemaphoreTake( mutex, portMAX_DELAY );
+		total--;
+		vPrintf("count02 Total = %d\n", total);
+		pthread_mutex_unlock(&mutex);
+		//xSemaphoreGive(mutex);
+
+		vTaskDelay(10);
+	}
+
+	vTaskDelete(NULL);
+}
+
+int cmd_test4(int argc, char* argv[])
+{
+	pthread_t id1;
+	pthread_t id2;
+
 	vPrintf("Task = %d\n", uxTaskGetNumberOfTasks());
+	vPrintf("Task = %d\n");
+
+	pthread_mutex_init(&mutex, NULL);
+	mutex = xSemaphoreCreateMutex();
+
+	pthread_create(&id1,NULL,(void *) count01, NULL);
+	pthread_create(&id2,NULL,(void *) count02, NULL);
+
 
 	return 0;
 }
