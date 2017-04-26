@@ -4,9 +4,17 @@
 
 int pthread_mutex_init(pthread_mutex_t *restrict m, const pthread_mutexattr_t *restrict a)
 {
+	int ret = 0;
+
 	*m = xSemaphoreCreateMutex();
 
-	return 0;
+	if( *m != NULL ) {
+		ret = 0;
+	} else {
+		ret = -1;
+	}
+
+	return ret;
 }
 
 int pthread_mutex_lock(pthread_mutex_t *m)
@@ -29,4 +37,11 @@ int pthread_mutex_unlock(pthread_mutex_t *m)
 	xSemaphoreGive(*m);
 
 	return 0;
+}
+
+int pthread_mutex_destroy(pthread_mutex_t *mutex)
+{
+	vSemaphoreDelete(*mutex);
+
+        return 0;
 }
