@@ -117,8 +117,9 @@ SYSTEM_OBJS = system.o testcode.o
 
 FATSL_OBJS = dir.o drv.o fat.o file.o f_lock.o util.o util_sfn.o volume.o ramdrv_f.o
 
+CMSIS_OBJS = cmsis_os2.o
 # All object files specified above are prefixed the intermediate directory
-OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_OBJS) $(SYSTEM_OBJS) $(FATSL_OBJS) $(TRACE_OBJS) $(APP_OBJS))
+OBJS = $(addprefix $(OBJDIR), $(STARTUP_OBJ) $(FREERTOS_OBJS) $(FREERTOS_MEMMANG_OBJS) $(FREERTOS_PORT_OBJS) $(LIB_OBJS) $(DRIVERS_OBJS) $(CLI_OBJS) $(SYSTEM_OBJS) $(FATSL_OBJS) $(CMSIS_OBJS) $(TRACE_OBJS) $(APP_OBJS))
 
 # Definition of the linker script and final targets
 LINKER_SCRIPT = $(addprefix $(APP_SRC), qemu.ld)
@@ -339,6 +340,10 @@ $(OBJDIR)volume.o : $(LIB_SRC)fat-sl/fat_sl/common/volume.c
 
 $(OBJDIR)ramdrv_f.o : $(LIB_SRC)fat-sl/media-drv/ram/ramdrv_f.c
 	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $(INC_FLAG_MUSL) $< $(OFLAG) $@
+
+#CMSIS
+$(OBJDIR)cmsis_os2.o : $(LIB_SRC)CMSIS/cmsis_os2.c
+	$(CC) $(CFLAG) $(CFLAGS) $(INC_FLAGS) $< $(OFLAG) $@
 
 # System function
 $(OBJDIR)system.o : $(SYSTEM_SRC)system.c
